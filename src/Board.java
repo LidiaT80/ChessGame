@@ -6,29 +6,41 @@ public class Board extends JPanel{
     JPanel[][] fields=new JPanel[8][8];
     ImageIcon[][] pieceImages = new ImageIcon[8][8];
     JLabel[][] fieldLabels =new JLabel[8][8];
+    ImageIcon blackRook=new ImageIcon("img/black_rook1.png");
+    ImageIcon blackKnight=new ImageIcon("img/black_knight1.png");
+    ImageIcon blackBishop=new ImageIcon("img/black_bishop1.png");
+    ImageIcon blackQueen=new ImageIcon("img/black_queen1.png");
+    ImageIcon blackKing=new ImageIcon("img/black_king1.png");
+    ImageIcon blackPawn=new ImageIcon("img/black_pawn1.png");
+    ImageIcon whitePawn=new ImageIcon("img/white_pawn1.png");
+    ImageIcon whiteRook=new ImageIcon("img/white_rook1.png");
+    ImageIcon whiteKnight=new ImageIcon("img/white_knight1.png");
+    ImageIcon whiteBishop=new ImageIcon("img/white_bishop1.png");
+    ImageIcon whiteQueen=new ImageIcon("img/white_queen1.png");
+    ImageIcon whiteKing=new ImageIcon("img/white_king1.png");
 
     public Board(){
-        setLayout(new GridLayout(8,8,3,3));
+        setLayout(new GridLayout(8,8));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         setBackground(Color.BLACK);
         setSize(500,500);
     }
 
     public void createPieces(){
-        pieceImages[0][0]=pieceImages[0][7]=new ImageIcon("img/black_rook.png");
-        pieceImages[0][1]=pieceImages[0][6]=new ImageIcon("img/black_knight.png");
-        pieceImages[0][2]=pieceImages[0][5] =new ImageIcon("img/black_bishop.png");
-        pieceImages[0][3]=new ImageIcon("img/black_queen.png");
-        pieceImages[0][4]=new ImageIcon("img/black_king.png");
+        pieceImages[0][0]=pieceImages[0][7]=blackRook;
+        pieceImages[0][1]=pieceImages[0][6]=blackKnight;
+        pieceImages[0][2]=pieceImages[0][5]=blackBishop;
+        pieceImages[0][3]=blackQueen;
+        pieceImages[0][4]=blackKing;
         for (int i = 0; i <8 ; i++) {
-            pieceImages[1][i]=new ImageIcon("img/black_pawn.png");
-            pieceImages[6][i]=new ImageIcon("img/white_pawn.png");
+            pieceImages[1][i]=blackPawn;
+            pieceImages[6][i]=whitePawn;
         }
-        pieceImages[7][0]=pieceImages[7][7]=new ImageIcon("img/white_rook.png");
-        pieceImages[7][1]=pieceImages[7][6]=new ImageIcon("img/white_knight.png");
-        pieceImages[7][2]=pieceImages[7][5] =new ImageIcon("img/white_bishop.png");
-        pieceImages[7][3]=new ImageIcon("img/white_queen.png");
-        pieceImages[7][4]=new ImageIcon("img/white_king.png");
+        pieceImages[7][0]=pieceImages[7][7]=whiteRook;
+        pieceImages[7][1]=pieceImages[7][6]=whiteKnight;
+        pieceImages[7][2]=pieceImages[7][5]=whiteBishop;
+        pieceImages[7][3]=whiteQueen;
+        pieceImages[7][4]=whiteKing;
 
     }
 
@@ -39,9 +51,9 @@ public class Board extends JPanel{
                 fields[i][j]=new JPanel();
                 fields[i][j].setLayout(new FlowLayout());
                 if((i+j)%2==0)
-                    fields[i][j].setBackground(Color.WHITE);
+                    fields[i][j].setBackground(Color.LIGHT_GRAY);
                 else
-                    fields[i][j].setBackground(Color.BLACK);
+                    fields[i][j].setBackground(Color.GRAY);
                 fieldLabels[i][j]=new JLabel(pieceImages[i][j]);
 
                 fields[i][j].add(fieldLabels[i][j]);
