@@ -11,6 +11,7 @@ public class GameWindow {
         frame.setVisible(true);
         Thread.sleep(3500);
         board.move();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
 
