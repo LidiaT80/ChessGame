@@ -3,6 +3,8 @@ package com.chess.pieces;
 import com.chess.Coord;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class King implements Piece {
 
@@ -36,6 +38,12 @@ public class King implements Piece {
     @Override
     public ImageIcon getImg() {
         return img;
+    }
+
+    @Override
+    public List<Coord> killMove() {
+        List<Coord> killCoords = new ArrayList<>();
+        return killCoords;
     }
 
     @Override

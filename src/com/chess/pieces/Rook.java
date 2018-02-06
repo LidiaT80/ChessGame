@@ -3,6 +3,8 @@ package com.chess.pieces;
 import com.chess.Coord;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Rook implements Piece {
     private int val; //value for priority
@@ -34,6 +36,12 @@ public class Rook implements Piece {
     @Override
     public ImageIcon getImg() {
         return img;
+    }
+
+    @Override
+    public List<Coord> killMove() {
+        List<Coord> killCoords = new ArrayList<>();
+        return killCoords;
     }
 
     @Override

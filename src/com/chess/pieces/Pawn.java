@@ -3,6 +3,8 @@ package com.chess.pieces;
 import com.chess.Coord;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pawn implements Piece{
 
@@ -40,5 +42,24 @@ public class Pawn implements Piece{
     @Override
     public int getValue() {
         return val;
+    }
+
+    public void possibleMoves(){ //lista här med?
+        if(color.equals("white")) {
+            coord.x++;
+        }else {
+            coord.x--;
+        }
+    }
+    public List<Coord> killMove(){
+        List<Coord> killCoords = new ArrayList<>();
+        if(color.equals("white")) {
+            killCoords.add(new Coord(coord.x++,coord.y++));
+            killCoords.add(new Coord(coord.x++,coord.y--));
+        }else {
+            killCoords.add(new Coord(coord.x--,coord.y++));
+            killCoords.add(new Coord(coord.x--,coord.y--));
+        }
+        return killCoords;
     }
 }
