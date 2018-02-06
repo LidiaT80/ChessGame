@@ -11,6 +11,7 @@ class GameWindow {
         board.createBoard();
         frame.add(board);
         frame.setVisible(true);
+
     }
 
     Board getBoard(){
