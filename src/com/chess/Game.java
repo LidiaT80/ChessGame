@@ -1,5 +1,8 @@
 package com.chess;
 
+import com.chess.pieces.Piece;
+
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 class Game {
@@ -12,7 +15,12 @@ class Game {
         p2 = new Player("black");
         this.board = board;
         board.initPlayers(p1.getPieces(), p2.getPieces());
+        boolean game = true;
 
+        while (game) {
+            chooseMove(p1.getPieces());
+            chooseMove(p2.getPieces());
+        }
         //DemoMode
         Thread.sleep(1000);
         Coord coord = new Coord(p1.getPieces().get(5).getPosition().x + 2, p1.getPieces().get(5).getPosition().y);
@@ -20,7 +28,7 @@ class Game {
 
     }
 
-    void playerMove(Player player, int id, Coord destination) {
+    void move(Player player, int id, Coord destination) {
         board.movePiece(player, id, destination);
     }
 
@@ -41,6 +49,41 @@ class Game {
             destination = new Coord(x, y);
             board.movePiece(p2, rnd, destination);
         }
+    }
+
+    public void canMove(Map<Integer, Piece> pieces) {
+        for (Piece p : pieces.values()) {
+
+        }
+        // kolla om vägen till destination är tom
+
+    }
+
+    public void getPossibleMoves(Map<Integer, Piece> pieces) {
+
+        //kolla om canmove==true
+    }
+
+    public void getPossibleKills(Map<Integer, Piece> pieces) {
+        for (Piece p : pieces.values()) {
+            p.killMove();
+        }
+        /*ny lista med Pieces
+        kolla getPossibleMoves lista om pjäsen kan ta en motståndarpjäs och lägg till den pjäsen i listan
+        */
+    }
+
+    public void chooseMove(Map<Integer, Piece> pieces) {
+//        canMove(pieces);
+//        getPossibleMoves();
+//        getPossibleKills();
+        //randomize
+        //move();
+
+    /*kolla om getPossibleKills isåfall använda getPossibleMoves listan
+      om där är kills, kolla prio, randomize bland dom högsta prio eller getPossibleMoves listan om ingen kills.
+      sen flytta
+    */
     }
 
     /*

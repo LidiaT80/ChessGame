@@ -31,7 +31,7 @@ public class Board extends JPanel {
         setLayout(new GridLayout(8, 8));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         setBackground(Color.BLACK);
-        //setSize(1000, 700); //Denna funkar ej, kan nog ta bort den istället?
+        setSize(600, 600);
     }
 
     public void createBoard() {
