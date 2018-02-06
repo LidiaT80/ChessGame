@@ -6,17 +6,19 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pawn implements Piece{
+public class Pawn implements Piece {
 
     private int val; //value for priority
     private String color;
     private Coord coord;
     private ImageIcon img;
+    private int id;
 
-    public Pawn(String color, int x,int y) {
+    public Pawn(String color, int x, int y,int id) {
+        this.id = id;
         this.val = 1;
         this.color = color;
-        this.coord = new Coord(x,y);
+        this.coord = new Coord(x, y);
 
         if (color.equals("white")) {
             img = new ImageIcon("img/white_pawn1.png");
@@ -30,8 +32,8 @@ public class Pawn implements Piece{
     }
 
     public void setPosition(int x, int y) {
-        coord.x=x;
-        coord.y=y;
+        coord.x = x;
+        coord.y = y;
     }
 
     @Override
@@ -44,21 +46,34 @@ public class Pawn implements Piece{
         return val;
     }
 
-    public void possibleMoves(){ //lista här med?
-        if(color.equals("white")) {
-            coord.x++;
-        }else {
-            coord.x--;
-        }
+    @Override
+    public int getId() {
+        return id;
     }
-    public List<Coord> killMove(){
+
+    @Override
+    public String getColor() {
+        return color;
+    }
+
+    public List<Coord> possibleMoves() {
+        List<Coord> coords = new ArrayList<>();
+        if (color.equals("white")) {
+            coords.add(new Coord(coord.x++,coord.y));
+        } else {
+           coords.add(new Coord(coord.x--,coord.y));
+        }
+        return coords;
+    }
+
+    public List<Coord> killMove() {
         List<Coord> killCoords = new ArrayList<>();
-        if(color.equals("white")) {
-            killCoords.add(new Coord(coord.x++,coord.y++));
-            killCoords.add(new Coord(coord.x++,coord.y--));
-        }else {
-            killCoords.add(new Coord(coord.x--,coord.y++));
-            killCoords.add(new Coord(coord.x--,coord.y--));
+        if (color.equals("white")) {
+            killCoords.add(new Coord(coord.x++, coord.y++));
+            killCoords.add(new Coord(coord.x++, coord.y--));
+        } else {
+            killCoords.add(new Coord(coord.x--, coord.y++));
+            killCoords.add(new Coord(coord.x--, coord.y--));
         }
         return killCoords;
     }

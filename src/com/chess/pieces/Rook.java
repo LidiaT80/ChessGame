@@ -11,8 +11,10 @@ public class Rook implements Piece {
     private String color;
     private Coord coord;
     private ImageIcon img;
+    private int id;
 
-    public Rook(String color, int x,int y) {
+    public Rook(String color, int x,int y, int id) {
+        this.id = id;
         this.val = 2;
         this.color = color;
         this.coord = new Coord(x,y);
@@ -42,6 +44,22 @@ public class Rook implements Piece {
     public List<Coord> killMove() {
         List<Coord> killCoords = new ArrayList<>();
         return killCoords;
+    }
+
+    @Override
+    public List<Coord> possibleMoves() {
+        List<Coord> coords = new ArrayList<>();
+        return coords;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String getColor() {
+        return color;
     }
 
     @Override

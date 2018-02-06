@@ -1,7 +1,6 @@
 package com.chess;
 
 import com.chess.pieces.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,23 +10,22 @@ public class Player {
 
     public Player(String color) {
         this.color = color;
+        int id = 0;
 
         if (color.equals("white")) {
-            int id = 0;
             for (int i = 0; i < 8; i++,id++) {
-                pieces.put(id, new Pawn("white", 1, i));
+                pieces.put(id, new Pawn("white", 1, i,id));
             }
             id++;
-            pieces.put(id, new King("white", 0, 3));
+            pieces.put(id, new King("white", 0, 3,id));
 
 
         } else { //black
-            int id = 0;
             for (int i = 0; i < 8; i++,id++) {
-                pieces.put(id, new Pawn("black", 6, i));
+                pieces.put(id, new Pawn("black", 6, i,id));
             }
             id++;
-            pieces.put(id, new King("black", 7, 3));
+            pieces.put(id, new King("black", 7, 3,id));
         }
 
     }

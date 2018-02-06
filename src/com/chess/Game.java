@@ -2,6 +2,9 @@ package com.chess;
 
 import com.chess.pieces.Piece;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,7 +19,7 @@ class Game {
         this.board = board;
         board.initPlayers(p1.getPieces(), p2.getPieces());
         boolean game = true;
-
+        System.out.println(p1.getPieces().get(1).getImg().getDescription());
         while (game) {
             chooseMove(p1.getPieces());
             chooseMove(p2.getPieces());
@@ -51,32 +54,45 @@ class Game {
         }
     }
 
-    public void canMove(Map<Integer, Piece> pieces) {
+    public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
+        Map<Integer, List<Coord>> movablePieces = new HashMap<>();
+
         for (Piece p : pieces.values()) {
+            List<Coord> coords = new ArrayList<>();
+            for (Coord coord : p.possibleMoves()) {
+                Piece piece = board.checkPosition(coord, p1, p2);
 
+                if (p.getImg().getDescription().contains("pawn")) {
+                    if (!(piece == null)) {
+                        coords.add(coord);
+                        movablePieces.put(p.getId(), coords);
+                    }
+                }
+            }
         }
-        // kolla om vägen till destination är tom
-
+        //TODO kolla om vägen till destination är tom
+        return movablePieces;
     }
 
-    public void getPossibleMoves(Map<Integer, Piece> pieces) {
 
-        //kolla om canmove==true
-    }
+    public Map<Integer, List<Coord>> getPossibleKills(Map<Integer, List<Coord>> mapList) {
+        Map<Integer, List<Coord>> killingPieces = new HashMap<>();
 
-    public void getPossibleKills(Map<Integer, Piece> pieces) {
-        for (Piece p : pieces.values()) {
-            p.killMove();
-        }
+//        if(!(piece.getColor().equals(p.getColor()))){
+//            piece.getId();
+//        }
+
         /*ny lista med Pieces
-        kolla getPossibleMoves lista om pjäsen kan ta en motståndarpjäs och lägg till den pjäsen i listan
+        kolla canMove listan om pjäsen kan ta en motståndarpjäs och lägg till den pjäsen i listan
         */
+
+        return killingPieces;
     }
 
     public void chooseMove(Map<Integer, Piece> pieces) {
-//        canMove(pieces);
-//        getPossibleMoves();
-//        getPossibleKills();
+        Map<Integer, List<Coord>> movables = new HashMap<>(canMove(pieces));
+        getPossibleKills(movables);
+        //getPossibleKills();
         //randomize
         //move();
 
