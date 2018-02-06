@@ -54,6 +54,5 @@ class Game {
       TODO ett komplett game med pawns + kung
       TODO logik för hur pjäserna får flytta
       TODO AI
-
     */
 }

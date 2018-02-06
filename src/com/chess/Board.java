@@ -13,8 +13,7 @@ public class Board extends JPanel {
 
     JPanel[][] fields = new JPanel[8][8];
 
-/* Flyttar in dessa till piece klasserna
-
+/*  Flyttar in dessa till piece klasserna
     ImageIcon blackRook = new ImageIcon("img/black_rook1.png");
     ImageIcon blackKnight = new ImageIcon("img/black_knight1.png");
     ImageIcon blackBishop = new ImageIcon("img/black_bishop1.png");
@@ -49,10 +48,7 @@ public class Board extends JPanel {
                 fields[i][j].revalidate();
                 fields[i][j].repaint();
                 add(fields[i][j]);
-
-
             }
-
         }
     }
 
