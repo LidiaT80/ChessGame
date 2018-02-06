@@ -1,7 +1,6 @@
 package com.chess.pieces;
 
 import com.chess.Coord;
-
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +11,10 @@ public class King implements Piece {
     private String color;
     private Coord coord;
     private ImageIcon img;
+    private int id;
 
-    public King(String color, int x, int y) {
+    public King(String color, int x, int y, int id) {
+        this.id = id;
         this.val = 1;
         this.color = color;
         this.coord = new Coord(x, y);
@@ -44,6 +45,22 @@ public class King implements Piece {
     public List<Coord> killMove() {
         List<Coord> killCoords = new ArrayList<>();
         return killCoords;
+    }
+
+    @Override
+    public List<Coord> possibleMoves() {
+        List<Coord> coords = new ArrayList<>();
+        return coords;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String getColor() {
+        return color;
     }
 
     @Override

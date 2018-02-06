@@ -11,4 +11,8 @@ public interface Piece {
     int getValue();
     ImageIcon getImg();
     List<Coord> killMove();
+    List<Coord> possibleMoves();
+    int getId();
+
+    String getColor();
 }

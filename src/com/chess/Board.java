@@ -2,31 +2,13 @@ package com.chess;
 
 import com.chess.pieces.Piece;
 
-
 import javax.swing.*;
 import java.awt.*;
-import java.security.Key;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class Board extends JPanel {
 
     JPanel[][] fields = new JPanel[8][8];
-
-/*  Flyttar in dessa till piece klasserna
-    ImageIcon blackRook = new ImageIcon("img/black_rook1.png");
-    ImageIcon blackKnight = new ImageIcon("img/black_knight1.png");
-    ImageIcon blackBishop = new ImageIcon("img/black_bishop1.png");
-    ImageIcon blackQueen = new ImageIcon("img/black_queen1.png");
-    ImageIcon blackKing = new ImageIcon("img/black_king1.png");
-    ImageIcon blackPawn = new ImageIcon("img/black_pawn1.png");
-    ImageIcon whitePawn = new ImageIcon("img/white_pawn1.png");
-    ImageIcon whiteRook = new ImageIcon("img/white_rook1.png");
-    ImageIcon whiteKnight = new ImageIcon("img/white_knight1.png");
-    ImageIcon whiteBishop = new ImageIcon("img/white_bishop1.png");
-    ImageIcon whiteQueen = new ImageIcon("img/white_queen1.png");
-    ImageIcon whiteKing = new ImageIcon("img/white_king1.png");
- */
 
     public Board() {
         setLayout(new GridLayout(8, 8));
@@ -68,7 +50,7 @@ public class Board extends JPanel {
         fields[x][y].repaint();
         fields[newx][newy].repaint();
 
-        player.getPieces().get(id).setPosition(newx,newy);
+        player.getPieces().get(id).setPosition(newx, newy);
     }
 
 
@@ -84,4 +66,15 @@ public class Board extends JPanel {
             fields[p.getPosition().x][p.getPosition().y].repaint();
         }
     }
+
+    public Piece checkPosition(Coord coord, Player p1, Player p2) {
+        try {
+            Component comp = fields[coord.x][coord.y].getComponent(0);   //hämtar component på current destination
+        } catch (Exception e) {
+            return null;
+        }
+        //TODO loopa igenom players Piece maps och jämför coords, returnera pjäsen
+        return null; //ÄNDRA
+    }
 }
+
