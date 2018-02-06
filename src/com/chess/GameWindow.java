@@ -7,7 +7,7 @@ class GameWindow {
     GameWindow() throws InterruptedException {
         board = new Board();
         JFrame frame=new JFrame();
-        frame.setSize(800,600);
+        frame.setSize(600,600);
         board.createBoard();
         frame.add(board);
         frame.setVisible(true);

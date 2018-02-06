@@ -1,13 +1,12 @@
 package com.chess;
 
 import com.chess.pieces.Piece;
-import sun.awt.SunHints;
 
 import javax.swing.*;
 import java.awt.*;
-import java.security.Key;
+
 import java.util.Map;
-import java.util.stream.Stream;
+
 
 public class Board extends JPanel {
 
