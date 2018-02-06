@@ -1,7 +1,7 @@
 package com.chess;
 
 import com.chess.pieces.Piece;
-import sun.awt.SunHints;
+
 
 import javax.swing.*;
 import java.awt.*;
