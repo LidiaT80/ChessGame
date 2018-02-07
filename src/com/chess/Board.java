@@ -18,8 +18,8 @@ public class Board extends JPanel {
     }
 
     public void createBoard() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
                 fields[i][j] = new JPanel();
                 fields[i][j].setLayout(new FlowLayout());
                 if ((i + j) % 2 == 0)
@@ -70,6 +70,10 @@ public class Board extends JPanel {
     public Piece checkPosition(Coord coord, Player p1, Player p2) {
         try {
             Component comp = fields[coord.x][coord.y].getComponent(0);   //hämtar component på current destination
+            System.out.println();
+            if(comp.getName().equals(p1.getPieces().get(1).getImg().toString())){
+
+            }
         } catch (Exception e) {
             return null;
         }
