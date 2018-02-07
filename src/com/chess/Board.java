@@ -70,7 +70,19 @@ public class Board extends JPanel {
 
     public Piece checkPosition(Coord coord, Player p1, Player p2) {
         try {
-            Component comp = fields[coord.x][coord.y].getComponent(0);   //hämtar component på current destination
+            for (Piece piece:p1.getPieces().values()) {
+
+                if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
+                    return piece;
+            }
+            for (Piece piece:p2.getPieces().values()) {
+
+                if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
+                    return piece;
+            }
+             ;//hämtar component på current destination
+
+
         } catch (Exception e) {
             return null;
         }

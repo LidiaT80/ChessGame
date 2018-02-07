@@ -2,10 +2,7 @@ package com.chess;
 
 import com.chess.pieces.Piece;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 class Game {
@@ -21,8 +18,8 @@ class Game {
         boolean game = true;
         System.out.println(p1.getPieces().get(1).getImg().getDescription());
         while (game) {
-            chooseMove(p1.getPieces());
-            chooseMove(p2.getPieces());
+            chooseMove(p1);
+            chooseMove(p2);
         }
         //DemoMode
         Thread.sleep(1000);
@@ -56,46 +53,60 @@ class Game {
 
     public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
         Map<Integer, List<Coord>> movablePieces = new HashMap<>();
+        Map<Integer, List<Coord>> killingPieces = new HashMap<>();
 
         for (Piece p : pieces.values()) {
-            List<Coord> coords = new ArrayList<>();
+            List<Coord> movableCoords = new ArrayList<>();
+            List<Coord> killingCoords = new ArrayList<>();
+            for (Coord coord : p.possibleMoves()) {
+                Piece piece = board.checkPosition(coord, p1, p2);
+                if(piece!=null && !(piece.getColor().equals(p.getColor()))){
+                    killingCoords.add(coord);
+                }
+                if(piece==null || !(piece.getColor().equals(p.getColor()))){
+                    movableCoords.add(coord);
+                }
+            }
+            movablePieces.put(p.getId(), movableCoords);
+            killingPieces.put(p.getId(),killingCoords);
+        }
+
+        if (!killingPieces.isEmpty())
+            return killingPieces;
+        else
+            return movablePieces;
+    }
+
+
+ /*   public Map<Integer, List<Coord>> getPossibleKills(Map<Integer, Piece> pieces) {
+
+
+        for (Piece p:pieces.values()) {
+
             for (Coord coord : p.possibleMoves()) {
                 Piece piece = board.checkPosition(coord, p1, p2);
 
-                if (p.getImg().getDescription().contains("pawn")) {
-                    if (!(piece == null)) {
-                        coords.add(coord);
-                        movablePieces.put(p.getId(), coords);
-                    }
-                }
             }
+
         }
-        //TODO kolla om vägen till destination är tom
-        return movablePieces;
-    }
+        return ;
+    }*/
 
+    public void chooseMove(Player p) {
+        Map<Integer, List<Coord>> movables = new HashMap<>(canMove(p.getPieces()));
+        int r;
+        do{
+            r=ThreadLocalRandom.current().nextInt(0,15);
+        }while (!(movables.containsKey(r)));
 
-    public Map<Integer, List<Coord>> getPossibleKills(Map<Integer, List<Coord>> mapList) {
-        Map<Integer, List<Coord>> killingPieces = new HashMap<>();
+        List<Coord> coordList=movables.get(r);
+        r=ThreadLocalRandom.current().nextInt(0,coordList.size());
+        move(p,r,coordList.get(r));
 
-//        if(!(piece.getColor().equals(p.getColor()))){
-//            piece.getId();
-//        }
-
-        /*ny lista med Pieces
-        kolla canMove listan om pjäsen kan ta en motståndarpjäs och lägg till den pjäsen i listan
-        */
-
-        return killingPieces;
-    }
-
-    public void chooseMove(Map<Integer, Piece> pieces) {
-        Map<Integer, List<Coord>> movables = new HashMap<>(canMove(pieces));
-        getPossibleKills(movables);
         //getPossibleKills();
         //randomize
         //move();
-
+        //TODO kolla om vägen till destination är tom
     /*kolla om getPossibleKills isåfall använda getPossibleMoves listan
       om där är kills, kolla prio, randomize bland dom högsta prio eller getPossibleMoves listan om ingen kills.
       sen flytta
