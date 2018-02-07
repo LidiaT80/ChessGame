@@ -40,34 +40,26 @@ class Game {
     }
 
     private void demo() throws InterruptedException {
-        Thread.sleep(1000);
-        Coord coord = new Coord(p1.getPieces().get(5).getPosition().x, p1.getPieces().get(5).getPosition().y + 1);
-
-        playerRandomMove();
-
-    }
-
-    void move(Player player, int id, Coord destination) {
-        board.movePiece(player, id, destination);
-    }
-
-    void playerRandomMove() throws InterruptedException {
         while (true) {
             Thread.sleep(1000);
-            int rnd = ThreadLocalRandom.current().nextInt(0, 8);
+            int rnd = ThreadLocalRandom.current().nextInt(0, 7);
             int x = p1.getPieces().get(rnd).getPosition().x;
             int y = p1.getPieces().get(rnd).getPosition().y + 1;
             Coord destination = new Coord(x, y);
-            board.movePiece(p1, rnd, destination);
+            move(p1, rnd, destination);
 
             Thread.sleep(500);
 
-            rnd = ThreadLocalRandom.current().nextInt(0, 8);
+            rnd = ThreadLocalRandom.current().nextInt(0, 7);
             x = p2.getPieces().get(rnd).getPosition().x;
             y = p2.getPieces().get(rnd).getPosition().y - 1;
             destination = new Coord(x, y);
             board.movePiece(p2, rnd, destination);
         }
+    }
+
+    void move(Player player, int id, Coord destination) {
+        board.movePiece(player, id, destination);
     }
 
     public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
@@ -93,6 +85,7 @@ class Game {
 
     public Map<Integer, List<Coord>> getPossibleKills(Map<Integer, List<Coord>> mapList) {
         Map<Integer, List<Coord>> killingPieces = new HashMap<>();
+        List<Coord> coords = new ArrayList<>();
 
 //        if(!(piece.getColor().equals(p.getColor()))){
 //            piece.getId();
@@ -108,6 +101,7 @@ class Game {
     public void chooseMove(Map<Integer, Piece> pieces) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(pieces));
         getPossibleKills(movables);
+
         //getPossibleKills();
         //randomize
         //move();

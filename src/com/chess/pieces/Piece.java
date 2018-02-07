@@ -8,7 +8,7 @@ import java.util.List;
 public interface Piece {
     Coord getPosition();
     void setPosition(int x,int y);
-    int getValue();
+    int getRank();
     ImageIcon getImg();
     List<Coord> killMove();
     List<Coord> possibleMoves();

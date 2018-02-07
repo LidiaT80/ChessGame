@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Queen implements Piece {
-    private int val; //value for priority
+    private int rank; //value for priority
     private String color;
     private Coord coord;
     private ImageIcon img;
@@ -15,7 +15,7 @@ public class Queen implements Piece {
 
     public Queen(String color, int x, int y,int id) {
         this.id = id;
-        this.val = 1;
+        this.rank = 3;
         this.color = color;
         this.coord = new Coord(x, y);
 
@@ -41,8 +41,8 @@ public class Queen implements Piece {
     }
 
     @Override
-    public int getValue() {
-        return val;
+    public int getRank() {
+        return rank;
     }
 
     @Override

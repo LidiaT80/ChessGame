@@ -7,7 +7,7 @@ import java.util.List;
 
 public class King implements Piece {
 
-    private int val; //value for priority
+    private int rank; //value for priority
     private String color;
     private Coord coord;
     private ImageIcon img;
@@ -15,7 +15,7 @@ public class King implements Piece {
 
     public King(String color, int x, int y, int id) {
         this.id = id;
-        this.val = 1;
+        this.rank = 4;
         this.color = color;
         this.coord = new Coord(x, y);
 
@@ -64,7 +64,7 @@ public class King implements Piece {
     }
 
     @Override
-    public int getValue() {
-        return val;
+    public int getRank() {
+        return rank;
     }
 }

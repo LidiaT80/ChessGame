@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Rook implements Piece {
-    private int val; //value for priority
+    private int rank; //value for priority
     private String color;
     private Coord coord;
     private ImageIcon img;
@@ -15,7 +15,7 @@ public class Rook implements Piece {
 
     public Rook(String color, int x,int y, int id) {
         this.id = id;
-        this.val = 2;
+        this.rank = 2;
         this.color = color;
         this.coord = new Coord(x,y);
 
@@ -49,6 +49,19 @@ public class Rook implements Piece {
     @Override
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
+        int boardSize = 8;
+
+        for(int x = 0;x<boardSize;x++){
+            if(!(coord.x == x)) //Om inte på current x-position
+            coords.add(new Coord(x,coord.y));
+        }
+        for(int y = 0;y<boardSize;y++){
+            if(!(coord.y == y)) //Om inte på current y-position
+                coords.add(new Coord(coord.x,y));
+        }
+        for(Coord c : coords){
+            System.out.println(c.x + " " +c.y);
+        }
         return coords;
     }
 
@@ -63,8 +76,8 @@ public class Rook implements Piece {
     }
 
     @Override
-    public int getValue() {
-        return val;
+    public int getRank() {
+        return rank;
     }
 
 

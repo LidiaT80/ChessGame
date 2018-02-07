@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Pawn implements Piece {
 
-    private int val; //value for priority
+    private int rank; //value for priority
     private String color;
     private Coord coord;
     private ImageIcon img;
@@ -16,7 +16,7 @@ public class Pawn implements Piece {
 
     public Pawn(String color, int x, int y,int id) {
         this.id = id;
-        this.val = 1;
+        this.rank = 1;
         this.color = color;
         this.coord = new Coord(x, y);
 
@@ -42,8 +42,8 @@ public class Pawn implements Piece {
     }
 
     @Override
-    public int getValue() {
-        return val;
+    public int getRank() {
+        return rank;
     }
 
     @Override
