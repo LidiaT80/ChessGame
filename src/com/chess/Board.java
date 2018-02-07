@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 
+
 public class Board extends JPanel {
 
     JPanel[][] fields = new JPanel[8][8];
@@ -69,11 +70,27 @@ public class Board extends JPanel {
 
     public Piece checkPosition(Coord coord, Player p1, Player p2) {
         try {
+<<<<<<< HEAD
             Component comp = fields[coord.x][coord.y].getComponent(0);   //hämtar component på current destination
             System.out.println();
             if(comp.getName().equals(p1.getPieces().get(1).getImg().toString())){
 
             }
+=======
+            for (Piece piece:p1.getPieces().values()) {
+
+                if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
+                    return piece;
+            }
+            for (Piece piece:p2.getPieces().values()) {
+
+                if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
+                    return piece;
+            }
+             ;//hämtar component på current destination
+
+
+>>>>>>> 9051eb5c6664e4dc0d6fc98c1fec0d96e33a2d36
         } catch (Exception e) {
             return null;
         }
