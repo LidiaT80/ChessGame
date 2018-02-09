@@ -42,9 +42,9 @@ public class Board extends JPanel {
         int newy = coord.y;
         Component comp = fields[x][y].getComponent(0);   //hämtar component på current destination
 
-        fields[x][y].remove(comp);                         //rensar components på current destination
-        if (fields[x][y].getComponents() != null)          //kollar om det finns något på destinationen
-            fields[newx][newy].remove(comp);               //rensar destinationen
+        fields[x][y].remove(comp);//rensar components på current destination
+        if (fields[newx][newy].getComponents() != null)          //kollar om det finns något på destinationen
+            fields[newx][newy].remove(0);               //rensar destinationen
         fields[newx][newy].add(new JLabel(player.getPieces().get(id).getImg())); //lägger till img på ny destination
         fields[x][y].revalidate();
         fields[newx][newy].revalidate();
@@ -72,12 +72,15 @@ public class Board extends JPanel {
         try {
             for (Piece piece:p1.getPieces().values()) {
 
-                if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
+               if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
+
+               // if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
                     return piece;
             }
             for (Piece piece:p2.getPieces().values()) {
 
-                if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
+                if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
+                //if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
                     return piece;
             }
              ;//hämtar component på current destination

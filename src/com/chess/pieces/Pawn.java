@@ -56,12 +56,16 @@ public class Pawn implements Piece {
         return color;
     }
 
-    public List<Coord> possibleMoves() {
+    public List<Coord> possibleMoves() {            //fel- ändrar koordinater
         List<Coord> coords = new ArrayList<>();
+        int x1,y1;
+        x1=coord.x;
         if (color.equals("white")) {
-            coords.add(new Coord(coord.x++,coord.y));
+            y1=coord.y+1;
+            coords.add(new Coord(x1,y1));
         } else {
-           coords.add(new Coord(coord.x--,coord.y));
+            y1=coord.y-1;
+           coords.add(new Coord(x1,y1));
         }
         return coords;
     }

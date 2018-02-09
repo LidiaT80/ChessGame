@@ -58,7 +58,7 @@ class Game {
             List<Coord> killingCoords = new ArrayList<>();
             for (Coord coord : p.possibleMoves()) {
                 Piece piece = board.checkPosition(coord, p1, p2);
-                if(piece!=null && !(piece.getColor().equals(p.getColor()))){
+                if(!(piece==null) && !(piece.getColor().equals(p.getColor()))){
                     killingCoords.add(coord);
                 }
                 if(piece==null || !(piece.getColor().equals(p.getColor()))){
@@ -66,7 +66,8 @@ class Game {
                 }
             }
             movablePieces.put(p.getId(), movableCoords);
-            killingPieces.put(p.getId(),killingCoords);
+            if(killingCoords.size()!=0)
+                killingPieces.put(p.getId(),killingCoords);
         }
 
         if (!killingPieces.isEmpty())
@@ -78,15 +79,15 @@ class Game {
 
     public void chooseMove(Player p) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(p.getPieces()));
-        int r;
+        int id,r;
         do{
-            r=ThreadLocalRandom.current().nextInt(0,15);
-        }while (!(movables.containsKey(r)));
+            id=ThreadLocalRandom.current().nextInt(0,15);
+        }while (!(movables.containsKey(id)));
 
-        List<Coord> coordList=movables.get(r);
+        List<Coord> coordList=movables.get(id);
         
-        r=ThreadLocalRandom.current().nextInt(0,coordList.size());
-        move(p,r,coordList.get(r));
+        r=ThreadLocalRandom.current().nextInt(0,coordList.size()-1);
+        move(p,id,coordList.get(r));
 
 
         //getPossibleKills();
