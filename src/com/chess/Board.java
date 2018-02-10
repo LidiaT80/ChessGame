@@ -35,7 +35,9 @@ public class Board extends JPanel {
         }
     }
 
-    public void movePiece(Player player, Player playerTwo, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
+
+    public void movePiece(Player player,Player opponent, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
+
         int x = player.getPieces().get(id).getPosition().x;
         int y = player.getPieces().get(id).getPosition().y;
         int newx = coord.x;
@@ -45,8 +47,10 @@ public class Board extends JPanel {
         fields[x][y].remove(comp);//rensar components på current destination
         if (fields[newx][newy].getComponents().length != 0) //kollar om det finns något på destinationen
         {
-            fields[newx][newy].remove(0);//rensar destinationen
-            playerTwo.removePiece(coord);
+
+            fields[newx][newy].remove(0);               //rensar destinationen
+            opponent.removePiece(new Coord(newx,newy));
+
         }
 
         fields[newx][newy].add(new JLabel(player.getPieces().get(id).getImg())); //lägger till img på ny destination
@@ -73,28 +77,16 @@ public class Board extends JPanel {
     }
 
     public Piece checkPosition(Coord coord, Player p1, Player p2) {
-        try {
             for (Piece piece:p1.getPieces().values()) {
-
                if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
-
-               // if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
                     return piece;
             }
             for (Piece piece:p2.getPieces().values()) {
-
                 if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
-                //if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
                     return piece;
             }
-             ;//hämtar component på current destination
 
-
-        } catch (Exception e) {
             return null;
-        }
-        //TODO loopa igenom players Piece maps och jämför coords, returnera pjäsen
-        return null; //ÄNDRA
     }
 }
 
