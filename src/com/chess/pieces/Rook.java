@@ -59,9 +59,6 @@ public class Rook implements Piece {
             if(!(coord.y == y)) //Om inte på current y-position
                 coords.add(new Coord(coord.x,y));
         }
-        for(Coord c : coords){
-            System.out.println(c.x + " " +c.y);
-        }
         return coords;
     }
 
