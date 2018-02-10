@@ -1,5 +1,6 @@
 package com.chess;
 
+import com.chess.pieces.Pawn;
 import com.chess.pieces.Piece;
 
 import java.util.*;
@@ -18,9 +19,9 @@ class Game {
         boolean game = true;
         boolean run = true;
         while (game) {
-            Thread.sleep(500);
+            Thread.sleep(200);
             chooseMove(p1, p2);
-            Thread.sleep(500);
+            Thread.sleep(200);
             chooseMove(p2, p1);
         }
 
@@ -31,6 +32,7 @@ class Game {
         board.movePiece(player, opponent, id, destination);
     }
 
+
     public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
         Map<Integer, List<Coord>> movablePieces = new HashMap<>();
         Map<Integer, List<Coord>> killingPieces = new HashMap<>();
@@ -40,14 +42,33 @@ class Game {
             List<Coord> killingCoords = new ArrayList<>();
             for (Coord coord : piece.possibleMoves()) {
                 Piece targetPiece = board.checkPosition(coord, p1, p2);
-                if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
-                    killingCoords.add(coord);
-                }
-                if (targetPiece == null || !(targetPiece.getColor().equals(piece.getColor()))) {
-                    movableCoords.add(coord);
+
+                // EGEN KOD FÖR PAWN
+                if (piece.getImg().getDescription().contains("pawn")) {
+                    if (targetPiece == null) {
+                        movableCoords.add(coord);
+                    }
+                    Pawn pawn = (Pawn) piece;
+                    for (Coord pawnCoord : pawn.killMove()) {
+                        targetPiece = board.checkPosition(pawnCoord, p1, p2);
+                        if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
+                            killingCoords.add(pawnCoord);
+                        }
+                    }
+                } else {
+                    // EGEN KOD FÖR PAWN /END
+
+
+                    if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
+                        killingCoords.add(coord);
+                    }
+                    if (targetPiece == null) {
+                        movableCoords.add(coord);
+                    }
                 }
             }
-            movablePieces.put(piece.getId(), movableCoords);
+            if (movableCoords.size() != 0)
+                movablePieces.put(piece.getId(), movableCoords);
             if (killingCoords.size() != 0)
                 killingPieces.put(piece.getId(), killingCoords);
         }
@@ -56,6 +77,8 @@ class Game {
             return killingPieces;
         else
             return movablePieces;
+
+        //TODO pawns, egen logik
     }
 
 
@@ -68,25 +91,15 @@ class Game {
         } while (!(movables.containsKey(randomIDpick)));
 
         List<Coord> coordList = movables.get(randomIDpick);
-        if(coordList.size()!=1) {
+        if (coordList.size() < 1) {
             randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size() - 1);
-        }else{
-            randomCoordPick=0;
+        } else {
+            randomCoordPick = 0;
         }
         move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
 
 
         //TODO kolla om vägen till destination är tom
-    /*kolla om getPossibleKills isåfall använda getPossibleMoves listan
-      om där är kills, kolla prio, randomize bland dom högsta prio eller getPossibleMoves listan om ingen kills.
-      sen flytta
-    */
-    }
 
-    /*
-      TODO fungerande pawns!
-      TODO hantering när pjäs tar en pjäs
-      TODO ett komplett game med pawns + kung
-      TODO tweak AI
-    */
+    }
 }

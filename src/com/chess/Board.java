@@ -73,26 +73,16 @@ public class Board extends JPanel {
     }
 
     public Piece checkPosition(Coord coord, Player p1, Player p2) {
-        try {
             for (Piece piece:p1.getPieces().values()) {
-
                if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
-
-               // if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
                     return piece;
             }
             for (Piece piece:p2.getPieces().values()) {
-
                 if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
-                //if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
                     return piece;
             }
 
-
-        } catch (Exception e) {
             return null;
-        }
-        return null;
     }
 }
 

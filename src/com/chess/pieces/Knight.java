@@ -63,11 +63,4 @@ public class Knight implements Piece {
         return coords;
     }
 
-    public List<Coord> killMove() {
-        List<Coord> killCoords = new ArrayList<>();
-        if (color.equals("white")) {
-        } else {
-        }
-        return killCoords;
-    }
 }
