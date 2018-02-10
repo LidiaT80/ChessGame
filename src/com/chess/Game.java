@@ -20,15 +20,15 @@ class Game {
         System.out.println(p1.getPieces().get(1).getImg().getDescription());
         while (game) {
             Thread.sleep(3000);
-            chooseMove(p1);
+            chooseMove(p1, p2);
             Thread.sleep(3000);
-            chooseMove(p2);
+            chooseMove(p2, p1);
         }
 
 
     }
 
-    private void demo() throws InterruptedException {
+  /*  private void demo() throws InterruptedException {
         while (true) {
             Thread.sleep(1000);
             int rnd = ThreadLocalRandom.current().nextInt(0, 7);
@@ -45,10 +45,10 @@ class Game {
             destination = new Coord(x, y);
             board.movePiece(p2, rnd, destination);
         }
-    }
+    }*/
 
-    void move(Player player, int id, Coord destination) {
-        board.movePiece(player, id, destination);
+    void move(Player player,Player playerTwo, int id, Coord destination) {
+        board.movePiece(player, playerTwo, id, destination);
     }
 
     public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
@@ -79,7 +79,7 @@ class Game {
     }
 
 
-    public void chooseMove(Player p) {
+    public void chooseMove(Player p,Player pTwo) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(p.getPieces()));
         int id,r;
         do{
@@ -89,7 +89,7 @@ class Game {
         List<Coord> coordList=movables.get(id);
         
         r=ThreadLocalRandom.current().nextInt(0,coordList.size()-1);
-        move(p,id,coordList.get(r));
+        move(p,pTwo, id,coordList.get(r));
 
 
         //getPossibleKills();

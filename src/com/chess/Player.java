@@ -63,9 +63,11 @@ public class Player {
     }
 
     public void removePiece(Coord coord){
+        Piece p=null;
         for (Piece piece:pieces.values()) {
             if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
-                pieces.remove(piece);
+                p=piece;
         }
+        pieces.remove(p.getId(),p);
     }
 }

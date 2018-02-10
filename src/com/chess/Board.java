@@ -35,7 +35,7 @@ public class Board extends JPanel {
         }
     }
 
-    public void movePiece(Player player, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
+    public void movePiece(Player player, Player playerTwo, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
         int x = player.getPieces().get(id).getPosition().x;
         int y = player.getPieces().get(id).getPosition().y;
         int newx = coord.x;
@@ -45,8 +45,8 @@ public class Board extends JPanel {
         fields[x][y].remove(comp);//rensar components på current destination
         if (fields[newx][newy].getComponents() != null) //kollar om det finns något på destinationen
         {
-
-            fields[newx][newy].remove(0);               //rensar destinationen
+            fields[newx][newy].remove(0);//rensar destinationen
+            playerTwo.removePiece(coord);
         }
 
         fields[newx][newy].add(new JLabel(player.getPieces().get(id).getImg())); //lägger till img på ny destination
