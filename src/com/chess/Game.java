@@ -20,9 +20,9 @@ class Game {
         System.out.println(p1.getPieces().get(1).getImg().getDescription());
         while (game) {
             Thread.sleep(3000);
-            chooseMove(p1, p2);
+            game=chooseMove(p1, p2);
             Thread.sleep(3000);
-            chooseMove(p2, p1);
+            game=chooseMove(p2, p1);
         }
 
 
@@ -79,7 +79,7 @@ class Game {
     }
 
 
-    public void chooseMove(Player p,Player pTwo) {
+    public boolean chooseMove(Player p,Player pTwo) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(p.getPieces()));
         int id,r;
         do{
@@ -88,8 +88,13 @@ class Game {
 
         List<Coord> coordList=movables.get(id);
         
-        r=ThreadLocalRandom.current().nextInt(0,coordList.size()-1);
-        move(p,pTwo, id,coordList.get(r));
+        if(coordList.size()>0) {
+            r = ThreadLocalRandom.current().nextInt(0, coordList.size() - 1);
+            move(p, pTwo, id, coordList.get(r));
+            return true;
+        }
+        else
+            return false;
 
 
         //getPossibleKills();
