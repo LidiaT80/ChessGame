@@ -43,8 +43,12 @@ public class Board extends JPanel {
         Component comp = fields[x][y].getComponent(0);   //hämtar component på current destination
 
         fields[x][y].remove(comp);//rensar components på current destination
-        if (fields[newx][newy].getComponents() != null)          //kollar om det finns något på destinationen
+        if (fields[newx][newy].getComponents() != null) //kollar om det finns något på destinationen
+        {
+
             fields[newx][newy].remove(0);               //rensar destinationen
+        }
+
         fields[newx][newy].add(new JLabel(player.getPieces().get(id).getImg())); //lägger till img på ny destination
         fields[x][y].revalidate();
         fields[newx][newy].revalidate();

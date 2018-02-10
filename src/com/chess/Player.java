@@ -61,4 +61,11 @@ public class Player {
     public Map<Integer, Piece> getPieces() {
         return pieces;
     }
+
+    public void removePiece(Coord coord){
+        for (Piece piece:pieces.values()) {
+            if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
+                pieces.remove(piece);
+        }
+    }
 }

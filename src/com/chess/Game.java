@@ -19,7 +19,9 @@ class Game {
         boolean run = true;
         System.out.println(p1.getPieces().get(1).getImg().getDescription());
         while (game) {
+            Thread.sleep(3000);
             chooseMove(p1);
+            Thread.sleep(3000);
             chooseMove(p2);
         }
 
