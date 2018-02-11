@@ -58,9 +58,9 @@ public class Pawn implements Piece {
 
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
-        if (color.equals("white")) {
+        if (color.equals("white") && coord.y<7) {
             coords.add(new Coord(coord.x,coord.y+1));
-        } else {
+        } else if(color.equals("black") && coord.y>0){
             coords.add(new Coord(coord.x,coord.y-1));
         }
         return coords;
