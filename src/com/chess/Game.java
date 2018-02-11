@@ -20,9 +20,9 @@ class Game {
         boolean run = true;
         while (game) {
 
-            Thread.sleep(200);
+            Thread.sleep(2000);
             chooseMove(p1, p2);
-            Thread.sleep(200);
+            Thread.sleep(2000);
             chooseMove(p2, p1);
 
         }

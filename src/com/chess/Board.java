@@ -49,7 +49,7 @@ public class Board extends JPanel {
         {
 
             fields[newx][newy].remove(0);               //rensar destinationen
-            opponent.removePiece(new Coord(newx,newy));
+            opponent.removePiece(coord);
 
         }
 
