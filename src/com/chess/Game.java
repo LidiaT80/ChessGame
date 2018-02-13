@@ -23,11 +23,11 @@ class Game {
         while (game1 && game2) {
 
             Thread.sleep(2000);
-            game1=chooseMove(p1, p2);
-            if(!game1)
+            game1 = chooseMove(p1, p2);
+            if (!game1)
                 break;
             Thread.sleep(2000);
-            game2=chooseMove(p2, p1);
+            game2 = chooseMove(p2, p1);
 
         }
 
@@ -45,56 +45,48 @@ class Game {
 
 
         for (Piece piece : pieces.values()) {
-            List<Coord> movableCoords = new ArrayList<>();
-            for (Coord coord : piece.possibleMoves()) {
-                Map<Integer, List<Coord>> target = new HashMap<>();
-                Piece targetPiece = board.checkPosition(coord, p1, p2);
+            Map<Integer, List<Coord>> target = new HashMap<>();
+            for (List<Coord> coordList : piece.possibleMoves()) {
+                List<Coord> movableCoords = new ArrayList<>();
+                for (Coord coord : coordList) {
+                    Piece targetPiece = board.checkPosition(coord, p1, p2);
 
-                // EGEN KOD FÖR PAWN
-                if (piece instanceof Pawn) {
-                    if (targetPiece == null) {
-                        movableCoords.add(coord);
-                    }
-                    Pawn pawn = (Pawn) piece;
-                    for (Coord pawnCoord : pawn.killMove()) {
-                        targetPiece = board.checkPosition(pawnCoord, p1, p2);
+                    // EGEN KOD FÖR PAWN
+                    if (piece instanceof Pawn) {
+                        if (targetPiece == null) {
+                            movableCoords.add(coord);
+                        }
+                        Pawn pawn = (Pawn) piece;
+                        for (Coord pawnCoord : pawn.killMove()) {
+                            targetPiece = board.checkPosition(pawnCoord, p1, p2);
+                            if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
+
+                            }
+                        }
+                    } else {
+                        // EGEN KOD FÖR PAWN /END
+
+                        if (!(targetPiece == null) && targetPiece.getColor().equals(piece.getColor()) && !(piece instanceof Knight))
+                            break;         //Om friendly pjäs på rutan, gå till nästa lista
+
+
                         if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
-
+                            movableCoords.add(coord);
+                            target.put(targetPiece.getRank(), movableCoords);
                         }
-                    }
-                } else {
-                    // EGEN KOD FÖR PAWN /END
-
-                    if(!(targetPiece==null) && targetPiece.getColor().equals(piece.getColor()) && !(piece instanceof Knight))
-                        break;
-
-
-                    if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
-
-                    movableCoords.add(coord);
-                    target.put(targetPiece.getRank(), movableCoords);
-                        List<Integer> rankning = new ArrayList();
-
-
-                        if (targetPiece == null){
-                            rankning.add(0);
+                        if (targetPiece == null) {
+                            movableCoords.add(coord);
+                            target.put(0, movableCoords);
                         }
-
-
-                    }
-                    if (targetPiece == null) {
-                        movableCoords.add(coord);
                     }
                 }
+
             }
 
         }
 
 
-
-
-            return movablePieces;
-
+        return movablePieces;
 
 
         //TODO pawns, egen logik
@@ -104,7 +96,7 @@ class Game {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(player.getPieces()));
         int randomIDpick, randomCoordPick;
 
-        if(movables.size()==0)
+        if (movables.size() == 0)
             return false;
         else {
             do {
@@ -113,7 +105,7 @@ class Game {
 
             List<Coord> coordList = movables.get(randomIDpick);
             if (coordList.size() < 1) {
-                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size() );
+                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
             } else {
                 randomCoordPick = 0;
             }
