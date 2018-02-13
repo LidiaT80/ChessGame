@@ -74,7 +74,7 @@ class Game {
                     }
                 }
             }
-            movablePieces.put(piece.getId(), rankedCoordList);
+            movablePieces.put(piece.getId(), rankedCoordList); //Slutligen lägg till pjäsens alla coords
         }
         //TODO filtrera ut coords med högst rank movablePieces->rankedCoordList.keyValue
         Integer high = Integer.MIN_VALUE;
