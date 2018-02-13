@@ -100,8 +100,6 @@ class Game {
         //TODO pawns, egen logik
     }
 
-
-
     public boolean chooseMove(Player player, Player opponent) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(player.getPieces()));
         int randomIDpick, randomCoordPick;
@@ -121,8 +119,6 @@ class Game {
             }
             return move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
         }
-
-
 
         //TODO kolla om vägen till destination är tom
 

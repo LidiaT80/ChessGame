@@ -42,7 +42,7 @@ public class Rook implements Piece {
 
     @Override
     public List<Coord> possibleMoves() {
-        List<Coord> coords = new ArrayList<>();
+        List<List<Coord>> coords = new ArrayList<>();
         int boardSize = 8;
 /*
         for(int x = 0;x<boardSize;x++){
@@ -53,17 +53,26 @@ public class Rook implements Piece {
             if(!(coord.y == y)) //Om inte på current y-position
                 coords.add(new Coord(coord.x,y));
         }*/
+        List<Coord> coord1 = new ArrayList<>();
+        List<Coord> coord2 = new ArrayList<>();
+        List<Coord> coord3 = new ArrayList<>();
+        List<Coord> coord4 = new ArrayList<>();
 
         for (int i = 1; i <boardSize ; i++) {
             if ((coord.y+i)<7)
-                coords.add(new Coord(coord.x,coord.y+i));
+                coord1.add(new Coord(coord.x,coord.y+i));
             if ((coord.y-i)>0)
-                coords.add(new Coord(coord.x,coord.y-i));
+                coord2.add(new Coord(coord.x,coord.y-i));
             if ((coord.x+i)<7)
-                coords.add(new Coord(coord.x+i,coord.y));
+                coord3.add(new Coord(coord.x+i,coord.y));
             if ((coord.x-i)>0)
-                coords.add(new Coord(coord.x-i,coord.y));
+                coord4.add(new Coord(coord.x-i,coord.y));
         }
+        coords.add(coord1);
+        coords.add(coord2);
+        coords.add(coord3);
+        coords.add(coord4);
+
         return coords;
     }
 
