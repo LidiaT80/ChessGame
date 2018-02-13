@@ -4,6 +4,7 @@ import com.chess.pieces.Knight;
 import com.chess.pieces.Pawn;
 import com.chess.pieces.Piece;
 
+
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -40,13 +41,13 @@ class Game {
 
 
     public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
-        Map<Integer, List<Coord>> movablePieces = new HashMap<>();
-        Map<Integer, List<Coord>> killingPieces = new HashMap<>();
+        Map<Integer, Map<Integer, List<Coord>>> movablePieces = new HashMap<>();
+
 
         for (Piece piece : pieces.values()) {
             List<Coord> movableCoords = new ArrayList<>();
-            List<Coord> killingCoords = new ArrayList<>();
             for (Coord coord : piece.possibleMoves()) {
+                Map<Integer, List<Coord>> target = new HashMap<>();
                 Piece targetPiece = board.checkPosition(coord, p1, p2);
 
                 // EGEN KOD FÖR PAWN
@@ -58,7 +59,7 @@ class Game {
                     for (Coord pawnCoord : pawn.killMove()) {
                         targetPiece = board.checkPosition(pawnCoord, p1, p2);
                         if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
-                            killingCoords.add(pawnCoord);
+
                         }
                     }
                 } else {
@@ -69,23 +70,32 @@ class Game {
 
 
                     if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
-                        killingCoords.add(coord);
+
+                    movableCoords.add(coord);
+                    target.put(targetPiece.getRank(), movableCoords);
+                        List<Integer> rankning = new ArrayList();
+
+
+                        if (targetPiece == null){
+                            rankning.add(0);
+                        }
+
+
                     }
                     if (targetPiece == null) {
                         movableCoords.add(coord);
                     }
                 }
             }
-            if (movableCoords.size() != 0)
-                movablePieces.put(piece.getId(), movableCoords);
-            if (killingCoords.size() != 0)
-                killingPieces.put(piece.getId(), killingCoords);
+
         }
 
-        if (!killingPieces.isEmpty())
-            return killingPieces;
-        else
+
+
+
             return movablePieces;
+
+
 
         //TODO pawns, egen logik
     }
