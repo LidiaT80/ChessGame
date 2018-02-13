@@ -84,7 +84,7 @@ class Game {
         }while (!(movables.containsKey(r)));
 
         List<Coord> coordList=movables.get(r);
-        
+
         r=ThreadLocalRandom.current().nextInt(0,coordList.size());
         move(p,r,coordList.get(r));
 
