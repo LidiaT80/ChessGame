@@ -57,8 +57,19 @@ public class Bishop implements Piece {
 
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
-        if (color.equals("white")) {
+        int boardSize=8;
+      /*  if (color.equals("white")) {
         } else {
+        }*/
+        for (int i = 1; i <boardSize ; i++) {
+            if ((coord.y+i)<7 && (coord.x+i)<7)
+                coords.add(new Coord(coord.x+i,coord.y+i));
+            if ((coord.x+i)<7 && (coord.y-i)>0)
+                coords.add(new Coord(coord.x+i,coord.y-i));
+            if ((coord.x-i)>0 && (coord.y-i)>0)
+                coords.add(new Coord(coord.x-i,coord.y-i));
+            if ((coord.x-i)>0 && (coord.y+i)<7)
+                coords.add(new Coord(coord.x-i,coord.y+i));
         }
         return coords;
     }

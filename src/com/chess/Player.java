@@ -64,7 +64,7 @@ public class Player {
     }
 
 
-    public void removePiece(Coord coord){
+    public boolean removePiece(Coord coord){
         Piece p=null;
         for (Piece piece:pieces.values()) {
             if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
@@ -79,5 +79,9 @@ public class Player {
 */
         }
         pieces.remove(p.getId(),p);
+        if(p instanceof King)
+            return false;
+        else
+            return true;
     }
 }

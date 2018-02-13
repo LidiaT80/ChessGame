@@ -36,12 +36,13 @@ public class Board extends JPanel {
     }
 
 
-    public void movePiece(Player player,Player opponent, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
+    public boolean movePiece(Player player,Player opponent, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
 
         int x = player.getPieces().get(id).getPosition().x;
         int y = player.getPieces().get(id).getPosition().y;
         int newx = coord.x;
         int newy = coord.y;
+        boolean loop=true;
         Component comp = fields[x][y].getComponent(0);   //hämtar component på current destination
 
         fields[x][y].remove(comp);//rensar components på current destination
@@ -49,7 +50,7 @@ public class Board extends JPanel {
         {
 
             fields[newx][newy].remove(0);               //rensar destinationen
-            opponent.removePiece(coord);
+            loop=opponent.removePiece(coord);
 
         }
 
@@ -60,6 +61,7 @@ public class Board extends JPanel {
         fields[newx][newy].repaint();
 
         player.getPieces().get(id).setPosition(newx, newy);
+        return loop;
     }
 
 
