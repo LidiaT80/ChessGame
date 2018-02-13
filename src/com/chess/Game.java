@@ -1,5 +1,7 @@
 package com.chess;
 
+import com.chess.pieces.Knight;
+import com.chess.pieces.Pawn;
 import com.chess.pieces.Piece;
 
 import java.util.*;
@@ -15,94 +17,100 @@ class Game {
         p2 = new Player("black");
         this.board = board;
         board.initPlayers(p1.getPieces(), p2.getPieces());
-        boolean game = true;
-        boolean run = true;
-        System.out.println(p1.getPieces().get(1).getImg().getDescription());
-        while (game) {
-            chooseMove(p1);
-            chooseMove(p2);
+        boolean game1 = true;
+        boolean game2 = true;
+        while (game1 && game2) {
+
+            Thread.sleep(2000);
+            game1=chooseMove(p1, p2);
+            if(!game1)
+                break;
+            Thread.sleep(2000);
+            game2=chooseMove(p2, p1);
+
         }
 
 
     }
 
-    private void demo() throws InterruptedException {
-        while (true) {
-            Thread.sleep(1000);
-            int rnd = ThreadLocalRandom.current().nextInt(0, 7);
-            int x = p1.getPieces().get(rnd).getPosition().x;
-            int y = p1.getPieces().get(rnd).getPosition().y + 1;
-            Coord destination = new Coord(x, y);
-            move(p1, rnd, destination);
 
-            Thread.sleep(500);
-
-            rnd = ThreadLocalRandom.current().nextInt(0, 7);
-            x = p2.getPieces().get(rnd).getPosition().x;
-            y = p2.getPieces().get(rnd).getPosition().y - 1;
-            destination = new Coord(x, y);
-            board.movePiece(p2, rnd, destination);
-        }
+    boolean move(Player player, Player opponent, int id, Coord destination) {
+        return board.movePiece(player, opponent, id, destination);
     }
 
-    void move(Player player, int id, Coord destination) {
-        board.movePiece(player, id, destination);
-    }
 
     public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
         Map<Integer, List<Coord>> movablePieces = new HashMap<>();
         Map<Integer, List<Coord>> killingPieces = new HashMap<>();
 
-        for (Piece p : pieces.values()) {
+        for (Piece piece : pieces.values()) {
             List<Coord> movableCoords = new ArrayList<>();
             List<Coord> killingCoords = new ArrayList<>();
-            for (Coord coord : p.possibleMoves()) {
-                Piece piece = board.checkPosition(coord, p1, p2);
-                if(piece!=null && !(piece.getColor().equals(p.getColor()))){
-                    killingCoords.add(coord);
-                }
-                if(piece==null || !(piece.getColor().equals(p.getColor()))){
-                    movableCoords.add(coord);
+            for (Coord coord : piece.possibleMoves()) {
+                Piece targetPiece = board.checkPosition(coord, p1, p2);
+
+                // EGEN KOD FÖR PAWN
+                if (piece instanceof Pawn) {
+                    if (targetPiece == null) {
+                        movableCoords.add(coord);
+                    }
+                    Pawn pawn = (Pawn) piece;
+                    for (Coord pawnCoord : pawn.killMove()) {
+                        targetPiece = board.checkPosition(pawnCoord, p1, p2);
+                        if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
+                            killingCoords.add(pawnCoord);
+                        }
+                    }
+                } else {
+                    // EGEN KOD FÖR PAWN /END
+
+                    if(!(targetPiece==null) && targetPiece.getColor().equals(piece.getColor()) && !(piece instanceof Knight))
+                        break;
+
+
+                    if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
+                        killingCoords.add(coord);
+                    }
+                    if (targetPiece == null) {
+                        movableCoords.add(coord);
+                    }
                 }
             }
-            movablePieces.put(p.getId(), movableCoords);
-            killingPieces.put(p.getId(),killingCoords);
+            if (movableCoords.size() != 0)
+                movablePieces.put(piece.getId(), movableCoords);
+            if (killingCoords.size() != 0)
+                killingPieces.put(piece.getId(), killingCoords);
         }
 
         if (!killingPieces.isEmpty())
             return killingPieces;
         else
             return movablePieces;
+
+        //TODO pawns, egen logik
     }
 
+    public boolean chooseMove(Player player, Player opponent) {
+        Map<Integer, List<Coord>> movables = new HashMap<>(canMove(player.getPieces()));
+        int randomIDpick, randomCoordPick;
 
-    public void chooseMove(Player p) {
-        Map<Integer, List<Coord>> movables = new HashMap<>(canMove(p.getPieces()));
-        int r;
-        do{
-            r=ThreadLocalRandom.current().nextInt(0,15);
-        }while (!(movables.containsKey(r)));
+        if(movables.size()==0)
+            return false;
+        else {
+            do {
+                randomIDpick = ThreadLocalRandom.current().nextInt(0, 16);
+            } while (!(movables.containsKey(randomIDpick)));
 
-        List<Coord> coordList=movables.get(r);
+            List<Coord> coordList = movables.get(randomIDpick);
+            if (coordList.size() < 1) {
+                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size() );
+            } else {
+                randomCoordPick = 0;
+            }
+            return move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
+        }
 
-        r=ThreadLocalRandom.current().nextInt(0,coordList.size());
-        move(p,r,coordList.get(r));
-
-
-        //getPossibleKills();
-        //randomize
-        //move();
         //TODO kolla om vägen till destination är tom
-    /*kolla om getPossibleKills isåfall använda getPossibleMoves listan
-      om där är kills, kolla prio, randomize bland dom högsta prio eller getPossibleMoves listan om ingen kills.
-      sen flytta
-    */
-    }
 
-    /*
-      TODO fungerande pawns!
-      TODO hantering när pjäs tar en pjäs
-      TODO ett komplett game med pawns + kung
-      TODO tweak AI
-    */
+    }
 }

@@ -41,16 +41,10 @@ public class Rook implements Piece {
     }
 
     @Override
-    public List<Coord> killMove() {
-        List<Coord> killCoords = new ArrayList<>();
-        return killCoords;
-    }
-
-    @Override
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
         int boardSize = 8;
-
+/*
         for(int x = 0;x<boardSize;x++){
             if(!(coord.x == x)) //Om inte på current x-position
             coords.add(new Coord(x,coord.y));
@@ -58,9 +52,17 @@ public class Rook implements Piece {
         for(int y = 0;y<boardSize;y++){
             if(!(coord.y == y)) //Om inte på current y-position
                 coords.add(new Coord(coord.x,y));
-        }
-        for(Coord c : coords){
-            System.out.println(c.x + " " +c.y);
+        }*/
+
+        for (int i = 1; i <boardSize ; i++) {
+            if ((coord.y+i)<7)
+                coords.add(new Coord(coord.x,coord.y+i));
+            if ((coord.y-i)>0)
+                coords.add(new Coord(coord.x,coord.y-i));
+            if ((coord.x+i)<7)
+                coords.add(new Coord(coord.x+i,coord.y));
+            if ((coord.x-i)>0)
+                coords.add(new Coord(coord.x-i,coord.y));
         }
         return coords;
     }

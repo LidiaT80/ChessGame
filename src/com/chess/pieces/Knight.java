@@ -57,17 +57,31 @@ public class Knight implements Piece {
 
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
-        if (color.equals("white")) {
-        } else {
+        if(coord.x<7){
+            if(coord.y>1)
+                coords.add(new Coord(coord.x+1,coord.y-2));
+            if(coord.y<6)
+                coords.add(new Coord(coord.x+1,coord.y+2));
+        }
+        if(coord.x<6){
+            if(coord.y>0)
+                coords.add(new Coord(coord.x+2,coord.y-1));
+            if(coord.y<7)
+                coords.add(new Coord(coord.x+2,coord.y+1));
+        }
+        if(coord.x>0){
+            if(coord.y>1)
+                coords.add(new Coord(coord.x-1,coord.y-2));
+            if(coord.y<6)
+                coords.add(new Coord(coord.x-1,coord.y+2));
+        }
+        if(coord.x>1){
+            if(coord.y>0)
+                coords.add(new Coord(coord.x-2,coord.y-1));
+            if(coord.y<7)
+                coords.add(new Coord(coord.x-2,coord.y+1));
         }
         return coords;
     }
 
-    public List<Coord> killMove() {
-        List<Coord> killCoords = new ArrayList<>();
-        if (color.equals("white")) {
-        } else {
-        }
-        return killCoords;
-    }
 }

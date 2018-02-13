@@ -35,16 +35,25 @@ public class Board extends JPanel {
         }
     }
 
-    public void movePiece(Player player, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
+
+    public boolean movePiece(Player player,Player opponent, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
+
         int x = player.getPieces().get(id).getPosition().x;
         int y = player.getPieces().get(id).getPosition().y;
         int newx = coord.x;
         int newy = coord.y;
+        boolean loop=true;
         Component comp = fields[x][y].getComponent(0);   //hämtar component på current destination
 
-        fields[x][y].remove(comp);                         //rensar components på current destination
-        if (fields[x][y].getComponents() != null)          //kollar om det finns något på destinationen
-            fields[newx][newy].remove(comp);               //rensar destinationen
+        fields[x][y].remove(comp);//rensar components på current destination
+        if (fields[newx][newy].getComponents().length != 0) //kollar om det finns något på destinationen
+        {
+
+            fields[newx][newy].remove(0);               //rensar destinationen
+            loop=opponent.removePiece(coord);
+
+        }
+
         fields[newx][newy].add(new JLabel(player.getPieces().get(id).getImg())); //lägger till img på ny destination
         fields[x][y].revalidate();
         fields[newx][newy].revalidate();
@@ -52,6 +61,7 @@ public class Board extends JPanel {
         fields[newx][newy].repaint();
 
         player.getPieces().get(id).setPosition(newx, newy);
+        return loop;
     }
 
 
@@ -69,25 +79,16 @@ public class Board extends JPanel {
     }
 
     public Piece checkPosition(Coord coord, Player p1, Player p2) {
-        try {
             for (Piece piece:p1.getPieces().values()) {
-
-                if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
+               if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
                     return piece;
             }
             for (Piece piece:p2.getPieces().values()) {
-
-                if(fields[coord.x][coord.y].getComponent(0).toString().contains(piece.getImg().toString()))
+                if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
                     return piece;
             }
-             ;//hämtar component på current destination
 
-
-        } catch (Exception e) {
             return null;
-        }
-        //TODO loopa igenom players Piece maps och jämför coords, returnera pjäsen
-        return null; //ÄNDRA
     }
 }
 

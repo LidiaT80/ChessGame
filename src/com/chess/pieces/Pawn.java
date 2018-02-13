@@ -58,10 +58,10 @@ public class Pawn implements Piece {
 
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
-        if (color.equals("white")) {
-            coords.add(new Coord(coord.x++,coord.y));
-        } else {
-           coords.add(new Coord(coord.x--,coord.y));
+        if (color.equals("white") && coord.y<7) {
+            coords.add(new Coord(coord.x,coord.y+1));
+        } else if(color.equals("black") && coord.y>0){
+            coords.add(new Coord(coord.x,coord.y-1));
         }
         return coords;
     }
@@ -69,11 +69,11 @@ public class Pawn implements Piece {
     public List<Coord> killMove() {
         List<Coord> killCoords = new ArrayList<>();
         if (color.equals("white")) {
-            killCoords.add(new Coord(coord.x++, coord.y++));
-            killCoords.add(new Coord(coord.x++, coord.y--));
+            killCoords.add(new Coord(coord.x+1, coord.y+1));
+            killCoords.add(new Coord(coord.x-1, coord.y+1));
         } else {
-            killCoords.add(new Coord(coord.x--, coord.y++));
-            killCoords.add(new Coord(coord.x--, coord.y--));
+            killCoords.add(new Coord(coord.x+1, coord.y-1));
+            killCoords.add(new Coord(coord.x-1, coord.y-1));
         }
         return killCoords;
     }

@@ -57,17 +57,29 @@ public class Queen implements Piece {
 
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
-        if (color.equals("white")) {
+      /*  if (color.equals("white")) {
         } else {
+        }*/
+        for (int i = 1; i <8 ; i++) {
+            if ((coord.y+i)<7 && (coord.x+i)<7)
+                coords.add(new Coord(coord.x+i,coord.y+i));
+            if ((coord.x+i)<7 && (coord.y-i)>0)
+                coords.add(new Coord(coord.x+i,coord.y-i));
+            if ((coord.x-i)>0 && (coord.y-i)>0)
+                coords.add(new Coord(coord.x-i,coord.y-i));
+            if ((coord.x-i)>0 && (coord.y+i)<7)
+                coords.add(new Coord(coord.x-i,coord.y+i));
+            if ((coord.y+i)<7)
+                coords.add(new Coord(coord.x,coord.y+i));
+            if ((coord.y-i)>0)
+                coords.add(new Coord(coord.x,coord.y-i));
+            if ((coord.x+i)<7)
+                coords.add(new Coord(coord.x+i,coord.y));
+            if ((coord.x-i)>0)
+                coords.add(new Coord(coord.x-i,coord.y));
+
         }
         return coords;
     }
 
-    public List<Coord> killMove() {
-        List<Coord> killCoords = new ArrayList<>();
-        if (color.equals("white")) {
-        } else {
-        }
-        return killCoords;
-    }
 }

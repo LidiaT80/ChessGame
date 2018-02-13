@@ -42,14 +42,16 @@ public class King implements Piece {
     }
 
     @Override
-    public List<Coord> killMove() {
-        List<Coord> killCoords = new ArrayList<>();
-        return killCoords;
-    }
-
-    @Override
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
+        if(coord.x<7)
+            coords.add(new Coord(coord.x+1,coord.y));
+        if(coord.x>0)
+            coords.add(new Coord(coord.x-1,coord.y));
+        if(coord.y<7)
+            coords.add(new Coord(coord.x,coord.y+1));
+        if(coord.y>0)
+            coords.add(new Coord(coord.x,coord.y-1));
         return coords;
     }
 
