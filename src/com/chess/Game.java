@@ -23,11 +23,11 @@ class Game {
         while (game1 && game2) {
 
             Thread.sleep(2000);
-            game1=chooseMove(p1, p2);
-            if(!game1)
+            game1 = chooseMove(p1, p2);
+            if (!game1)
                 break;
             Thread.sleep(2000);
-            game2=chooseMove(p2, p1);
+            game2 = chooseMove(p2, p1);
 
         }
 
@@ -43,68 +43,69 @@ class Game {
     public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
         Map<Integer, Map<Integer, List<Coord>>> movablePieces = new HashMap<>();
 
-
         for (Piece piece : pieces.values()) {
-            List<Coord> movableCoords = new ArrayList<>();
-            for (Coord coord : piece.possibleMoves()) {
-                Map<Integer, List<Coord>> target = new HashMap<>();
-                Piece targetPiece = board.checkPosition(coord, p1, p2);
+            Map<Integer, List<Coord>> rankedCoordList = new HashMap<>();
+            for (List<Coord> coordList : piece.possibleMoves()) {
+                for (Coord coord : coordList) {
+                    Piece targetPiece = board.checkPosition(coord, p1, p2);
 
-                // EGEN KOD FÖR PAWN
-                if (piece instanceof Pawn) {
-                    if (targetPiece == null) {
-                        movableCoords.add(coord);
-                    }
-                    Pawn pawn = (Pawn) piece;
-                    for (Coord pawnCoord : pawn.killMove()) {
-                        targetPiece = board.checkPosition(pawnCoord, p1, p2);
-                        if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
+                    // EGEN KOD FÖR PAWN
+                    if (piece instanceof Pawn) {
+                        if (targetPiece == null)
+                            rankedCoordList.computeIfAbsent(0, k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
 
+                        Pawn pawn = (Pawn) piece;
+                        for (Coord pawnCoord : pawn.killMove()) {
+                            targetPiece = board.checkPosition(pawnCoord, p1, p2);
+                            if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor())))  //Om motståndare finns på rutan
+                                rankedCoordList.computeIfAbsent(targetPiece.getRank(), k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
                         }
-                    }
-                } else {
-                    // EGEN KOD FÖR PAWN /END
-
-                    if(!(targetPiece==null) && targetPiece.getColor().equals(piece.getColor()) && !(piece instanceof Knight))
-                        break;
+                    } else {
+                        // EGEN KOD FÖR PAWN /END
 
 
-                    if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
+                        if (!(targetPiece == null) && targetPiece.getColor().equals(piece.getColor()) && !(piece instanceof Knight))
+                            break;         //Om friendly pjäs på rutan, gå till nästa lista
+                        else if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor())))  //Om motståndare finns på rutan
+                            rankedCoordList.computeIfAbsent(targetPiece.getRank(), k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
+                        else if (targetPiece == null)                                         //om rutan är tom
+                            rankedCoordList.computeIfAbsent(0, k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
 
-                    movableCoords.add(coord);
-                    target.put(targetPiece.getRank(), movableCoords);
-                        List<Integer> rankning = new ArrayList();
-
-
-                        if (targetPiece == null){
-                            rankning.add(0);
-                        }
-
-
-                    }
-                    if (targetPiece == null) {
-                        movableCoords.add(coord);
                     }
                 }
             }
+            movablePieces.put(piece.getId(), rankedCoordList); //Slutligen lägg till pjäsens alla coords
+        }
+        //TODO filtrera ut coords med högst rank movablePieces->rankedCoordList.keyValue
+        Integer high = Integer.MIN_VALUE;
+        for (Map<Integer, List<Coord>> map : movablePieces.values()) {      // Hämtar högsta rankvärde
+            for (Integer rank : map.keySet()) {
+                if (rank > high) {
+                    high = rank;
+                }
+            }
+        }
+        final Integer fHigh = high;
+        Map<Integer, List<Coord>> filteredList = new HashMap<>();
 
+//       filteredList = movablePieces.entrySet().stream().flatMap((id -> id.getValue().entrySet().stream().filter(rank -> rank.getValue())));  // ? ?!?! ?!? ?! ? ?!? HJÄLP
+
+
+        for (int i = 0; i < movablePieces.size(); i++) {
+            for (int j = 0; j < movablePieces.size(); j++)
+                filteredList.put(, )
+            movablePieces.get(i).remove(j);
         }
 
-
-
-
-            return movablePieces;
-
-
-
-        //TODO pawns, egen logik
+        //Skicka tillbaka map<id,List<Coord> ...
+        return movablePieces;
     }
 
     public boolean chooseMove(Player player, Player opponent) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(player.getPieces()));
         int randomIDpick, randomCoordPick;
 
-        if(movables.size()==0)
+        if (movables.size() == 0)
             return false;
         else {
             do {
@@ -113,14 +114,11 @@ class Game {
 
             List<Coord> coordList = movables.get(randomIDpick);
             if (coordList.size() < 1) {
-                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size() );
+                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
             } else {
                 randomCoordPick = 0;
             }
             return move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
         }
-
-        //TODO kolla om vägen till destination är tom
-
     }
 }

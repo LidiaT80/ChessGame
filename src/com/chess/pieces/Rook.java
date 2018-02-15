@@ -41,7 +41,7 @@ public class Rook implements Piece {
     }
 
     @Override
-    public List<Coord> possibleMoves() {
+    public List<List<Coord>> possibleMoves() {
         List<List<Coord>> coords = new ArrayList<>();
         int boardSize = 8;
 /*

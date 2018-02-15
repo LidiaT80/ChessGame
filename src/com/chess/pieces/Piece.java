@@ -10,7 +10,7 @@ public interface Piece {
     void setPosition(int x,int y);
     int getRank();
     ImageIcon getImg();
-    List<Coord> possibleMoves();
+    List<List<Coord>> possibleMoves();
     int getId();
 
     String getColor();
