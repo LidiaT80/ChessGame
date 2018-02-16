@@ -84,6 +84,6 @@ public class Bishop implements Piece {
         coords.add(coord4);
 
         return coords;
-    }
+     }
 
 }

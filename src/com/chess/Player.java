@@ -3,7 +3,9 @@ package com.chess;
 import com.chess.pieces.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Player {
     private String color;
@@ -63,25 +65,17 @@ public class Player {
         return pieces;
     }
 
+    public String getColor() {
+        return color;
+    }
 
-    public boolean removePiece(Coord coord){
-        Piece p=null;
-        for (Piece piece:pieces.values()) {
-            if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
-                p=piece;
-/*
-    public void removePiece(Coord coord) {
-        for (Piece piece : pieces.values()) {
-            if (piece.getPosition().x == coord.x && piece.getPosition().y == coord.y) {
-                pieces.remove(piece.getId());
-                break;
-            }
-*/
+    public void removePiece(Coord coord){
+        Piece piece=null;
+        for (Piece p:pieces.values()) {
+            if(p.getPosition().x==coord.x && p.getPosition().y==coord.y)
+                piece=p;
         }
-        pieces.remove(p.getId(),p);
-        if(p instanceof King)
-            return false;
-        else
-            return true;
+        pieces.remove(piece.getId(),piece);
+
     }
 }

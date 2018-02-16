@@ -42,6 +42,7 @@ public class King implements Piece {
     }
 
     @Override
+
     public List<List<Coord>> possibleMoves() {
         List<List<Coord>> coords = new ArrayList<>();
 

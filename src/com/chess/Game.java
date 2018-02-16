@@ -1,5 +1,6 @@
 package com.chess;
 
+import com.chess.pieces.King;
 import com.chess.pieces.Knight;
 import com.chess.pieces.Pawn;
 import com.chess.pieces.Piece;
@@ -13,6 +14,8 @@ class Game {
     private Player p1;
     private Player p2;
     private Board board;
+    private boolean check=false;
+    int kingId=11;
 
     Game(Board board) throws InterruptedException {
         p1 = new Player("white");
@@ -22,22 +25,20 @@ class Game {
         boolean game1 = true;
         boolean game2 = true;
         while (game1 && game2) {
-
             Thread.sleep(500);
             game1 = chooseMove(p1, p2);
             if (!game1)
                 break;
             Thread.sleep(500);
             game2 = chooseMove(p2, p1);
-
         }
 
 
     }
 
 
-    private boolean move(Player player, Player opponent, int id, Coord destination) {
-        return board.movePiece(player, opponent, id, destination);
+    public void move(Player player, Player opponent, int id, Coord destination) {
+        board.movePiece(player, opponent, id, destination);
     }
 
 
@@ -119,19 +120,125 @@ class Game {
 
     private boolean chooseMove(Player player, Player opponent) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(player.getPieces()));
+
+        List<Coord> coordList;
         int randomIDpick, randomCoordPick;
+        Coord opponentCoord;
+        boolean checkmate=false;
 
-        if (movables.size() == 0)
-            return false;
-        else {
-            do {
-                randomIDpick = ThreadLocalRandom.current().nextInt(0, 16);
-            } while (!(movables.containsKey(randomIDpick)));
+        if(check){
+            randomIDpick=kingId;
+            coordList=movables.get(randomIDpick);
+            if(!(coordList==null)){
+                coordList=checkKingMove(coordList, opponent);
+                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size() );
 
-            List<Coord> coordList = movables.get(randomIDpick);
-            randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
+                move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
+                check=false;
+                checkKing(player, opponent);
+                return true;
+            }
+            if(coordList==null){
+                opponentCoord=findOpponent(player, opponent);
 
-            return move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
+                for (int key:movables.keySet()) {
+                    checkmate=true;
+                    for (Coord c:movables.get(key)) {
+                        if(c.x==opponentCoord.x && c.y==opponentCoord.y){
+                            checkmate=false;
+                            move(player, opponent, key, opponentCoord);
+                            break;
+                        }
+                    }
+                    if(!checkmate)
+                        break;
+                }
+                if(checkmate){
+                    System.out.println("Checkmate!!!");
+                    return false;
+                }
+            }
+            check=false;
+        }else {
+            if(movables.size()==0)
+                return false;
+
+            randomIDpick=choosePiece(movables);
+            coordList = movables.get(randomIDpick);
+            if(randomIDpick==kingId){
+                coordList=checkKingMove(coordList, opponent);
+            }
+            randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size() );
+
+            move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
+            checkKing(player, opponent);
         }
+        return true;
+    }
+
+    private List<Coord> checkKingMove(List<Coord> coordList, Player opponent) {
+        boolean movable;
+        List<Coord> kingCoords= new ArrayList<>();
+        for (Coord coord:coordList) {
+                movable=true;
+            for (List<Coord> list:canMove(opponent.getPieces()).values()) {
+                for (Coord c:list) {
+                    if(c.x==coord.x && c.y==coord.y)
+                        movable=false;
+                }
+            }
+            if(movable)
+                kingCoords.add(coord);
+        }
+        return kingCoords;
+    }
+
+
+    public int choosePiece(Map<Integer, List<Coord>> movables){  //chooses a random piece from list by Id
+        int randomIDpick;
+        do {
+            randomIDpick = ThreadLocalRandom.current().nextInt(0, 16);
+        } while (!(movables.containsKey(randomIDpick)));
+        return randomIDpick;
+    }
+
+    public void checkKing(Player player, Player opponent){ //checks if the king is threatened
+
+        for (Piece p:player.getPieces().values()) {
+            if(p instanceof Pawn)
+                for (Coord c:((Pawn) p).killMove()) {
+                    checkForCheck(c,player,opponent);
+                }
+
+            for (List<Coord> coordList: p.possibleMoves()) {
+                for (Coord c:coordList) {
+                    checkForCheck(c,player,opponent);
+                }
+            }
+
+        }
+    }
+
+    public void checkForCheck(Coord c, Player player, Player opponent){
+        Piece targetPiece = board.checkPosition(c, player, opponent);
+        if(targetPiece instanceof King && !(targetPiece.getColor().equals(player.getColor()))) {
+            System.out.println("Check!");
+            check = true;
+        }
+    }
+
+
+    public Coord findOpponent(Player player, Player opponent){   // identifies the opponent piece that threatens the king
+
+        Map<Integer, List<Coord>> opponentMovables = new HashMap<>(canMove(opponent.getPieces()));
+        int opponentId=-1;
+        for (int key:opponentMovables.keySet()){
+            for (Coord c:opponentMovables.get(key)) {
+                if(c.x==player.getPieces().get(kingId).getPosition().x && c.y==player.getPieces().get(kingId).getPosition().y)
+                    opponentId=key;
+            }
+        }
+        return opponent.getPieces().get(opponentId).getPosition();
+
     }
 }
