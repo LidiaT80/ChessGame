@@ -7,7 +7,6 @@ import com.chess.pieces.Piece;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 class Game {
@@ -37,12 +36,12 @@ class Game {
     }
 
 
-    boolean move(Player player, Player opponent, int id, Coord destination) {
+    private boolean move(Player player, Player opponent, int id, Coord destination) {
         return board.movePiece(player, opponent, id, destination);
     }
 
 
-    public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
+    private Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
         Map<Integer, Map<Integer, List<Coord>>> movablePieces = new HashMap<>();
 
         for (Piece piece : pieces.values()) {
@@ -79,7 +78,7 @@ class Game {
                 movablePieces.put(piece.getId(), rankedCoordList); //Slutligen lägg till pjäsens alla coords
             }
         }
-        //TODO filtrera ut coords med högst rank movablePieces->rankedCoordList.keyValue
+
         int high = Integer.MIN_VALUE;
         for (Map<Integer, List<Coord>> map : movablePieces.values()) {      // Hämtar högsta rankvärde
             for (Integer rank : map.keySet()) {
@@ -90,6 +89,7 @@ class Game {
         }
         final Integer fHigh = high;
 
+        //Filter movablePieces to only holding highest rank moves!
         movablePieces = movablePieces
                 .entrySet()
                 .stream()
@@ -104,32 +104,20 @@ class Game {
                                                 .collect(Collectors.toMap(
                                                         Map.Entry::getKey, Map.Entry::getValue))));
 
-        //Filtered movablePieces to only holding highest rank moves!
 
-        //TODO get movablePieces data to filteredList<ID <Coords>>....
+        //Input the map with killingMoves to outputMap
         Map<Integer, List<Coord>> filteredMap = new HashMap<>();
         Object[] id = movablePieces.keySet().toArray();
         for (int i = 0; i < movablePieces.size(); i++) {
-            if (movablePieces.get(id[i]).containsKey(fHigh)){
+            if (movablePieces.get(id[i]).containsKey(fHigh)) {
                 filteredMap.put((Integer) id[i], movablePieces.get(id[i]).get(fHigh));
+            }
         }
+
+        return filteredMap;
     }
 
-
-
-
-/*
-        for (int i = 0; i < movablePieces.size(); i++) {
-            for (int j = 0; j < movablePieces.size(); j++)
-                filteredList.put(, )
-            movablePieces.get(i).remove(j);
-        }
-*/
-    //Skicka tillbaka map<id,List<Coord> ...
-        return filteredMap;
-}
-
-    public boolean chooseMove(Player player, Player opponent) {
+    private boolean chooseMove(Player player, Player opponent) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(player.getPieces()));
         int randomIDpick, randomCoordPick;
 
