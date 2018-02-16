@@ -65,6 +65,9 @@ public class Player {
         return pieces;
     }
 
+    public String getColor() {
+        return color;
+    }
 
     public void removePiece(Coord coord){
         Piece piece=null;

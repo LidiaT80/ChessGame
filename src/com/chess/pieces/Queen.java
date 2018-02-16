@@ -4,7 +4,9 @@ import com.chess.Coord;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Queen implements Piece {
     private int rank; //value for priority
@@ -55,12 +57,20 @@ public class Queen implements Piece {
         return color;
     }
 
-    public List<Coord> possibleMoves() {
-        List<Coord> coords = new ArrayList<>();
+    public List<List<Coord>> possibleMoves() {
+        List<List<Coord>> coords = new ArrayList<>();
       /*  if (color.equals("white")) {
         } else {
         }*/
-        for (int i = 1; i <8 ; i++) {
+      Rook rook = new Rook(getColor(),coord.x,coord.y,getId());
+      Bishop bishop = new Bishop(getColor(),coord.x,coord.y,getId());
+
+        List<List<Coord>> biRook= new ArrayList<>();
+        biRook.addAll(rook.possibleMoves());
+        biRook.addAll(bishop.possibleMoves());
+
+
+        /*for (int i = 1; i <8 ; i++) {
             if ((coord.y+i)<7 && (coord.x+i)<7)
                 coords.add(new Coord(coord.x+i,coord.y+i));
             if ((coord.x+i)<7 && (coord.y-i)>0)
@@ -78,8 +88,8 @@ public class Queen implements Piece {
             if ((coord.x-i)>0)
                 coords.add(new Coord(coord.x-i,coord.y));
 
-        }
-        return coords;
+        }*/
+        return biRook;
     }
 
 }

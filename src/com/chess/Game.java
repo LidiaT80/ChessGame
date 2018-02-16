@@ -5,8 +5,11 @@ import com.chess.pieces.Knight;
 import com.chess.pieces.Pawn;
 import com.chess.pieces.Piece;
 
+
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 class Game {
     private Player p1;
@@ -23,14 +26,12 @@ class Game {
         boolean game1 = true;
         boolean game2 = true;
         while (game1 && game2) {
-
-            Thread.sleep(1500);
-            game1=chooseMove(p1, p2);
-            if(!game1)
+            Thread.sleep(500);
+            game1 = chooseMove(p1, p2);
+            if (!game1)
                 break;
-            Thread.sleep(1500);
-            game2=chooseMove(p2, p1);
-
+            Thread.sleep(500);
+            game2 = chooseMove(p2, p1);
         }
 
 
@@ -43,57 +44,91 @@ class Game {
 
 
     public Map<Integer, List<Coord>> canMove(Map<Integer, Piece> pieces) {
-        Map<Integer, List<Coord>> movablePieces = new HashMap<>();
-        Map<Integer, List<Coord>> killingPieces = new HashMap<>();
+        Map<Integer, Map<Integer, List<Coord>>> movablePieces = new HashMap<>();
 
         for (Piece piece : pieces.values()) {
-            List<Coord> movableCoords = new ArrayList<>();
-            List<Coord> killingCoords = new ArrayList<>();
-            for (Coord coord : piece.possibleMoves()) {
-                Piece targetPiece = board.checkPosition(coord, p1, p2);
+            Map<Integer, List<Coord>> rankedCoordList = new HashMap<>();
+            for (List<Coord> coordList : piece.possibleMoves()) {
+                for (Coord coord : coordList) {
+                    Piece targetPiece = board.checkPosition(coord, p1, p2);
 
-                // EGEN KOD FÖR PAWN
-                if (piece instanceof Pawn) {
-                    if (targetPiece == null) {
-                        movableCoords.add(coord);
-                    }
-                    Pawn pawn = (Pawn) piece;
-                    for (Coord pawnCoord : pawn.killMove()) {
-                        targetPiece = board.checkPosition(pawnCoord, p1, p2);
-                        if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
-                            killingCoords.add(pawnCoord);
+                    // EGEN KOD FÖR PAWN
+                    if (piece instanceof Pawn) {
+                        if (targetPiece == null)
+                            rankedCoordList.computeIfAbsent(0, k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
+                        Pawn pawn = (Pawn) piece;
+                        for (Coord pawnCoord : pawn.killMove()) {
+                            targetPiece = board.checkPosition(pawnCoord, p1, p2);
+                            if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor())))  //Om motståndare finns på rutan
+                                rankedCoordList.computeIfAbsent(targetPiece.getRank(), k -> new ArrayList<>()).add(pawnCoord); //lägg till coord i lista, skapa ny om lista ej finns
                         }
-                    }
-                } else {
-                    // EGEN KOD FÖR PAWN /END
-
-                    if(!(targetPiece==null) && targetPiece.getColor().equals(piece.getColor()) && !(piece instanceof Knight))
-                        break;
+                    } else {
+                        // EGEN KOD FÖR PAWN /END
 
 
-                    if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) { //Om motståndare finns på rutan
-                        killingCoords.add(coord);
-                    }
-                    if (targetPiece == null) {
-                        movableCoords.add(coord);
+                        if (!(targetPiece == null) && targetPiece.getColor().equals(piece.getColor()) && !(piece instanceof Knight))
+                            break;         //Om friendly pjäs på rutan, gå till nästa lista
+                        else if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor())))  //Om motståndare finns på rutan
+                            rankedCoordList.computeIfAbsent(targetPiece.getRank(), k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
+                        else if (targetPiece == null)                                         //om rutan är tom
+                            rankedCoordList.computeIfAbsent(0, k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
+
                     }
                 }
             }
-            if (movableCoords.size() != 0)
-                movablePieces.put(piece.getId(), movableCoords);
-            if (killingCoords.size() != 0)
-                killingPieces.put(piece.getId(), killingCoords);
+            if (rankedCoordList.size() != 0) {
+                movablePieces.put(piece.getId(), rankedCoordList); //Slutligen lägg till pjäsens alla coords
+            }
         }
+        //TODO filtrera ut coords med högst rank movablePieces->rankedCoordList.keyValue
+        int high = Integer.MIN_VALUE;
+        for (Map<Integer, List<Coord>> map : movablePieces.values()) {      // Hämtar högsta rankvärde
+            for (Integer rank : map.keySet()) {
+                if (rank > high) {
+                    high = rank;
+                }
+            }
+        }
+        final Integer fHigh = high;
 
-        if (!killingPieces.isEmpty())
-            return killingPieces;
-        else
-            return movablePieces;
+        movablePieces = movablePieces
+                .entrySet()
+                .stream()
+                .collect(
+                        Collectors
+                                .toMap(
+                                        Map.Entry::getKey, e -> e.getValue()
+                                                .entrySet()
+                                                .stream()
+                                                .filter(rank -> rank.getKey()
+                                                        .equals(fHigh))
+                                                .collect(Collectors.toMap(
+                                                        Map.Entry::getKey, Map.Entry::getValue))));
 
-        //TODO pawns, egen logik
+        //Filtered movablePieces to only holding highest rank moves!
+
+        //TODO get movablePieces data to filteredList<ID <Coords>>....
+        Map<Integer, List<Coord>> filteredMap = new HashMap<>();
+        Object[] id = movablePieces.keySet().toArray();
+        for (int i = 0; i < movablePieces.size(); i++) {
+            if (movablePieces.get(id[i]).containsKey(fHigh)){
+                filteredMap.put((Integer) id[i], movablePieces.get(id[i]).get(fHigh));
+        }
     }
 
 
+
+
+/*
+        for (int i = 0; i < movablePieces.size(); i++) {
+            for (int j = 0; j < movablePieces.size(); j++)
+                filteredList.put(, )
+            movablePieces.get(i).remove(j);
+        }
+*/
+    //Skicka tillbaka map<id,List<Coord> ...
+        return filteredMap;
+}
 
     public boolean chooseMove(Player player, Player opponent) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(player.getPieces()));
@@ -153,6 +188,24 @@ class Game {
         return true;
     }
 
+    private List<Coord> checkKingMove(List<Coord> coordList, Player opponent) {
+        boolean movable;
+        List<Coord> kingCoords= new ArrayList<>();
+        for (Coord coord:coordList) {
+                movable=true;
+            for (List<Coord> list:canMove(opponent.getPieces()).values()) {
+                for (Coord c:list) {
+                    if(c.x==coord.x && c.y==coord.y)
+                        movable=false;
+                }
+            }
+            if(movable)
+                kingCoords.add(coord);
+        }
+        return kingCoords;
+    }
+
+
     public int choosePiece(Map<Integer, List<Coord>> movables){  //chooses a random piece from list by Id
         int randomIDpick;
         do {
@@ -162,37 +215,31 @@ class Game {
     }
 
     public void checkKing(Player player, Player opponent){ //checks if the king is threatened
-        List<Coord> list;
+
         for (Piece p:player.getPieces().values()) {
             if(p instanceof Pawn)
-                list=((Pawn) p).killMove();
-            else
-                list=p.possibleMoves();
+                for (Coord c:((Pawn) p).killMove()) {
+                    checkForCheck(c,player,opponent);
+                }
 
-            for (Coord c:list) {
-                Piece targetPiece = board.checkPosition(c, player, opponent);
-                if(targetPiece instanceof King && !(targetPiece.getColor().equals(p.getColor()))){
-                System.out.println("Check!");
-                check=true;
+            for (List<Coord> coordList: p.possibleMoves()) {
+                for (Coord c:coordList) {
+                    checkForCheck(c,player,opponent);
                 }
             }
+
         }
     }
 
-    public List<Coord> checkKingMove(List<Coord> kingMoves, Player opponent){ //checks which fields are safe to move to
-        boolean movable;
-        List<Coord> kingCoords= new ArrayList<>();
-        for (Coord coord:kingMoves) {
-            movable=true;
-            for (List<Coord> list:canMove(opponent.getPieces()).values()) {
-                if (list.contains(coord))
-                        movable=false;
-            }
-            if(movable)
-                kingCoords.add(coord);
+    public void checkForCheck(Coord c, Player player, Player opponent){
+        Piece targetPiece = board.checkPosition(c, player, opponent);
+        if(targetPiece instanceof King && !(targetPiece.getColor().equals(player.getColor()))) {
+            System.out.println("Check!");
+            check = true;
         }
-        return kingCoords;
     }
+
+
     public Coord findOpponent(Player player, Player opponent){   // identifies the opponent piece that threatens the king
 
         Map<Integer, List<Coord>> opponentMovables = new HashMap<>(canMove(opponent.getPieces()));
@@ -204,5 +251,6 @@ class Game {
             }
         }
         return opponent.getPieces().get(opponentId).getPosition();
+
     }
 }
