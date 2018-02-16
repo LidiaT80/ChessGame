@@ -57,15 +57,15 @@ public class Queen implements Piece {
         return color;
     }
 
-    public List<Coord> possibleMoves() {
-        List<Coord> coords = new ArrayList<>();
+    public List<List<Coord>> possibleMoves() {
+        List<List<Coord>> coords = new ArrayList<>();
       /*  if (color.equals("white")) {
         } else {
         }*/
       Rook rook = new Rook(getColor(),coord.x,coord.y,getId());
       Bishop bishop = new Bishop(getColor(),coord.x,coord.y,getId());
 
-        List<Coord> biRook= new ArrayList<Coord>();
+        List<List<Coord>> biRook= new ArrayList<>();
         biRook.addAll(rook.possibleMoves());
         biRook.addAll(bishop.possibleMoves());
 

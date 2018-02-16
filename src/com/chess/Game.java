@@ -24,11 +24,11 @@ class Game {
         boolean game2 = true;
         while (game1 && game2) {
 
-            Thread.sleep(2000);
+            Thread.sleep(500);
             game1 = chooseMove(p1, p2);
             if (!game1)
                 break;
-            Thread.sleep(2000);
+            Thread.sleep(500);
             game2 = chooseMove(p2, p1);
 
         }
@@ -55,12 +55,11 @@ class Game {
                     if (piece instanceof Pawn) {
                         if (targetPiece == null)
                             rankedCoordList.computeIfAbsent(0, k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
-
                         Pawn pawn = (Pawn) piece;
                         for (Coord pawnCoord : pawn.killMove()) {
                             targetPiece = board.checkPosition(pawnCoord, p1, p2);
                             if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor())))  //Om motståndare finns på rutan
-                                rankedCoordList.computeIfAbsent(targetPiece.getRank(), k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
+                                rankedCoordList.computeIfAbsent(targetPiece.getRank(), k -> new ArrayList<>()).add(pawnCoord); //lägg till coord i lista, skapa ny om lista ej finns
                         }
                     } else {
                         // EGEN KOD FÖR PAWN /END
@@ -76,7 +75,9 @@ class Game {
                     }
                 }
             }
-            movablePieces.put(piece.getId(), rankedCoordList); //Slutligen lägg till pjäsens alla coords
+            if (rankedCoordList.size() != 0) {
+                movablePieces.put(piece.getId(), rankedCoordList); //Slutligen lägg till pjäsens alla coords
+            }
         }
         //TODO filtrera ut coords med högst rank movablePieces->rankedCoordList.keyValue
         int high = Integer.MIN_VALUE;
@@ -88,9 +89,6 @@ class Game {
             }
         }
         final Integer fHigh = high;
-        Map<Integer, Map<Integer, List<Coord>>> lista;
-        Map<Integer, List<Coord>> filteredMap = new HashMap<>();
-
 
         movablePieces = movablePieces
                 .entrySet()
@@ -106,6 +104,18 @@ class Game {
                                                 .collect(Collectors.toMap(
                                                         Map.Entry::getKey, Map.Entry::getValue))));
 
+        //Filtered movablePieces to only holding highest rank moves!
+
+        //TODO get movablePieces data to filteredList<ID <Coords>>....
+        Map<Integer, List<Coord>> filteredMap = new HashMap<>();
+        Object[] id = movablePieces.keySet().toArray();
+        for (int i = 0; i < movablePieces.size(); i++) {
+            if (movablePieces.get(id[i]).containsKey(fHigh)){
+                filteredMap.put((Integer) id[i], movablePieces.get(id[i]).get(fHigh));
+        }
+    }
+
+
 
 
 /*
@@ -115,9 +125,9 @@ class Game {
             movablePieces.get(i).remove(j);
         }
 */
-        //Skicka tillbaka map<id,List<Coord> ...
+    //Skicka tillbaka map<id,List<Coord> ...
         return filteredMap;
-    }
+}
 
     public boolean chooseMove(Player player, Player opponent) {
         Map<Integer, List<Coord>> movables = new HashMap<>(canMove(player.getPieces()));
@@ -131,11 +141,8 @@ class Game {
             } while (!(movables.containsKey(randomIDpick)));
 
             List<Coord> coordList = movables.get(randomIDpick);
-            if (coordList.size() < 1) {
-                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
-            } else {
-                randomCoordPick = 0;
-            }
+            randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
+
             return move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
         }
     }

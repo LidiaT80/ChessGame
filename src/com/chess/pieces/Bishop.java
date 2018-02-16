@@ -13,7 +13,7 @@ public class Bishop implements Piece {
     private ImageIcon img;
     private int id;
 
-    public Bishop(String color, int x, int y,int id) {
+    public Bishop(String color, int x, int y, int id) {
         this.id = id;
         this.rank = 2;
         this.color = color;
@@ -55,9 +55,9 @@ public class Bishop implements Piece {
         return color;
     }
 
-    public List<Coord> possibleMoves() {
-        List<Coord> coords = new ArrayList<>();
-        int boardSize=8;
+    public List<List<Coord>> possibleMoves() {
+        List<List<Coord>> coords = new ArrayList<>();
+        int boardSize = 8;
 
         List<Coord> coord1 = new ArrayList<>();
         List<Coord> coord2 = new ArrayList<>();
@@ -67,21 +67,21 @@ public class Bishop implements Piece {
       /*  if (color.equals("white")) {
         } else {
         }*/
-        for (int i = 1; i <boardSize ; i++) {
-            if ((coord.y+i)<7 && (coord.x+i)<7)
-                coord1.add(new Coord(coord.x+i,coord.y+i));
-            if ((coord.x+i)<7 && (coord.y-i)>0)
-                coord2.add(new Coord(coord.x+i,coord.y-i));
-            if ((coord.x-i)>0 && (coord.y-i)>0)
-                coord3.add(new Coord(coord.x-i,coord.y-i));
-            if ((coord.x-i)>0 && (coord.y+i)<7)
-                coord4.add(new Coord(coord.x-i,coord.y+i));
+        for (int i = 1; i < boardSize; i++) {
+            if ((coord.y + i) < 7 && (coord.x + i) < 7)
+                coord1.add(new Coord(coord.x + i, coord.y + i));
+            if ((coord.x + i) < 7 && (coord.y - i) > 0)
+                coord2.add(new Coord(coord.x + i, coord.y - i));
+            if ((coord.x - i) > 0 && (coord.y - i) > 0)
+                coord3.add(new Coord(coord.x - i, coord.y - i));
+            if ((coord.x - i) > 0 && (coord.y + i) < 7)
+                coord4.add(new Coord(coord.x - i, coord.y + i));
         }
 
-        coords.add((Coord) coord1);
-        coords.add((Coord) coord2);
-        coords.add((Coord) coord3);
-        coords.add((Coord) coord4);
+        coords.add(coord1);
+        coords.add(coord2);
+        coords.add(coord3);
+        coords.add(coord4);
 
         return coords;
     }
