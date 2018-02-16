@@ -58,19 +58,31 @@ public class Bishop implements Piece {
     public List<Coord> possibleMoves() {
         List<Coord> coords = new ArrayList<>();
         int boardSize=8;
+
+        List<Coord> coord1 = new ArrayList<>();
+        List<Coord> coord2 = new ArrayList<>();
+        List<Coord> coord3 = new ArrayList<>();
+        List<Coord> coord4 = new ArrayList<>();
+
       /*  if (color.equals("white")) {
         } else {
         }*/
         for (int i = 1; i <boardSize ; i++) {
             if ((coord.y+i)<7 && (coord.x+i)<7)
-                coords.add(new Coord(coord.x+i,coord.y+i));
+                coord1.add(new Coord(coord.x+i,coord.y+i));
             if ((coord.x+i)<7 && (coord.y-i)>0)
-                coords.add(new Coord(coord.x+i,coord.y-i));
+                coord2.add(new Coord(coord.x+i,coord.y-i));
             if ((coord.x-i)>0 && (coord.y-i)>0)
-                coords.add(new Coord(coord.x-i,coord.y-i));
+                coord3.add(new Coord(coord.x-i,coord.y-i));
             if ((coord.x-i)>0 && (coord.y+i)<7)
-                coords.add(new Coord(coord.x-i,coord.y+i));
+                coord4.add(new Coord(coord.x-i,coord.y+i));
         }
+
+        coords.add((Coord) coord1);
+        coords.add((Coord) coord2);
+        coords.add((Coord) coord3);
+        coords.add((Coord) coord4);
+
         return coords;
     }
 
