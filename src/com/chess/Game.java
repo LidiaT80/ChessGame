@@ -26,11 +26,11 @@ class Game {
         boolean game1 = true;
         boolean game2 = true;
         while (game1 && game2) {
-            Thread.sleep(500);
+            Thread.sleep(1500);
             game1 = chooseMove(p1, p2);
             if (!game1)
                 break;
-            Thread.sleep(500);
+            Thread.sleep(1500);
             game2 = chooseMove(p2, p1);
         }
 
@@ -175,12 +175,14 @@ class Game {
             if(movables.size()==0)
                 return false;
 
-            randomIDpick=choosePiece(movables);
-            coordList = movables.get(randomIDpick);
-            if(randomIDpick==kingId){
-                coordList=checkKingMove(coordList, opponent);
-            }
-            randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size() );
+            do{
+                randomIDpick=choosePiece(movables);
+                coordList = movables.get(randomIDpick);
+                if(randomIDpick==kingId){
+                    coordList=checkKingMove(coordList, opponent);
+                }
+                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size() );
+            }while (!(coordList.size()>0));
 
             move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
             checkKing(player, opponent);
@@ -192,12 +194,15 @@ class Game {
         boolean movable;
         List<Coord> kingCoords= new ArrayList<>();
         for (Coord coord:coordList) {
-                movable=true;
-            for (List<Coord> list:canMove(opponent.getPieces()).values()) {
-                for (Coord c:list) {
-                    if(c.x==coord.x && c.y==coord.y)
-                        movable=false;
+            movable=true;
+            for (Piece piece:opponent.getPieces().values()) {
+                for(List<Coord> list:piece.possibleMoves()){
+                    for (Coord c:list) {
+                        if(c.x==coord.x && c.y==coord.y)
+                            movable=false;
+                    }
                 }
+
             }
             if(movable)
                 kingCoords.add(coord);
