@@ -72,6 +72,6 @@ public class Bishop implements Piece {
                 coords.add(new Coord(coord.x-i,coord.y+i));
         }
         return coords;
-    }
+     }
 
 }
