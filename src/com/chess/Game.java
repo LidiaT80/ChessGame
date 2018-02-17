@@ -84,7 +84,7 @@ class Game {
         return movablePieces;
     }
 
-    private Map<Integer, List<Coord>> rankFilter(Map<Integer, Map<Integer, List<Coord>>> movablesMap) {
+    private Map<Integer, List<Coord>> filterRankedMap(Map<Integer, Map<Integer, List<Coord>>> movablesMap) {
         int high = Integer.MIN_VALUE;
         for (Map<Integer, List<Coord>> map : movablesMap.values()) {      // Hämtar högsta rankvärde
             for (Integer rank : map.keySet()) {
@@ -127,14 +127,25 @@ class Game {
     private Map<Integer, List<Coord>> filterUnrankedMap(Map<Integer, Map<Integer, List<Coord>>> inputMap) {
         Map<Integer, List<Coord>> filteredMap = new HashMap<>();
         Object[] id = inputMap.keySet().toArray();
+        for (int i = 0; i < id.length; i++) {
+            Object[] rank = inputMap.get(id[i]).keySet().toArray();
+            List<Coord> coords = new ArrayList<>();
+            for (int j = 0; j < rank.length ; j++) {
+                coords.addAll(inputMap.get(id[i]).get(rank[j]));
+            }
+            filteredMap.put((Integer)id[i],coords);
+        }
         //TODO make forLoops/Streams and extract all Coords to filteredMap
         return filteredMap;
     }
 
     private boolean chooseMove(Player player, Player opponent) {
         Map<Integer, Map<Integer, List<Coord>>> movables = new HashMap<>(canMove(player.getPieces()));
-        Map<Integer, List<Coord>> highestRankMovables = new HashMap<>(rankFilter(movables));
+
+        Map<Integer, List<Coord>> highestRankMovables = new HashMap<>(filterRankedMap(movables));
+        Map<Integer, List<Coord>> unRankedMovables = filterUnrankedMap(movables);
         List<Coord> coordList=new ArrayList<>();
+
         int randomIDpick, randomCoordPick;
         Coord opponentCoord;
         boolean checkmate = false;

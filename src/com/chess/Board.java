@@ -75,7 +75,7 @@ public class Board extends JPanel {
     }
 
     public Piece checkPosition(Coord coord, Player p1, Player p2) {
-        
+
         Stream<Piece> stream=Stream.concat(p1.getPieces().values().stream(), p2.getPieces().values().stream());
         Stream<Piece> stream1=Stream.concat(p1.getPieces().values().stream(), p2.getPieces().values().stream());
 
