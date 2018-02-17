@@ -25,11 +25,11 @@ class Game {
         boolean game1 = true;
         boolean game2 = true;
         while (game1 && game2) {
-            Thread.sleep(1500);
+            Thread.sleep(1000);
             game1 = chooseMove(p1, p2);
             if (!game1)
                 break;
-            Thread.sleep(1500);
+            Thread.sleep(1000);
             game2 = chooseMove(p2, p1);
         }
 
@@ -67,8 +67,10 @@ class Game {
 
                         if (!(targetPiece == null) && targetPiece.getColor().equals(piece.getColor()) && !(piece instanceof Knight))
                             break;         //Om friendly pjäs på rutan, gå till nästa lista
-                        else if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor())))  //Om motståndare finns på rutan
+                        else if (!(targetPiece == null) && !(targetPiece.getColor().equals(piece.getColor()))) {  //Om motståndare finns på rutan
                             rankedCoordList.computeIfAbsent(targetPiece.getRank(), k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
+                            break;
+                        }
                         else if (targetPiece == null)                                         //om rutan är tom
                             rankedCoordList.computeIfAbsent(0, k -> new ArrayList<>()).add(coord); //lägg till coord i lista, skapa ny om lista ej finns
 
@@ -152,21 +154,27 @@ class Game {
 
         if (check) {
             randomIDpick = kingId;
-            for (List<Coord> list:movables.get(randomIDpick).values()) {
-                for(Coord c:list){
+            if(unRankedMovables.get(randomIDpick).size()!=0){
+                for (Coord c:unRankedMovables.get(randomIDpick)){
                     coordList.add(c);
                 }
             }
-            if (!(coordList == null)) {
+
+     /*       for (List<Coord> list:movables.get(randomIDpick).values()) {
+                for(Coord c:list){
+                    coordList.add(c);
+                }
+            }*/
+            if (coordList.size()!=0) {
                 coordList = checkKingMove(coordList, opponent);
                 randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
 
                 move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
                 check = false;
-                checkKing(player, opponent);
+                checkKing( opponent, player);
                 return true;
             }
-            if (coordList == null) {
+            if (coordList.size() == 0) {
                 opponentCoord = findOpponent(player, opponent);
 
                 for (int key : movables.keySet()) {
@@ -191,7 +199,7 @@ class Game {
             }
             check = false;
         } else {
-            if (highestRankMovables.size() == 0)
+            if (movables.size() == 0)
                 return false;
 
 
