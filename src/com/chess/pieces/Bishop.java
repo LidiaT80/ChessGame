@@ -64,9 +64,6 @@ public class Bishop implements Piece {
         List<Coord> coord3 = new ArrayList<>();
         List<Coord> coord4 = new ArrayList<>();
 
-      /*  if (color.equals("white")) {
-        } else {
-        }*/
         for (int i = 1; i < boardSize; i++) {
             if ((coord.y + i) < 7 && (coord.x + i) < 7)
                 coord1.add(new Coord(coord.x + i, coord.y + i));

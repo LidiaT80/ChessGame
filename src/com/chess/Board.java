@@ -5,6 +5,8 @@ import com.chess.pieces.Piece;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
 public class Board extends JPanel {
@@ -19,24 +21,23 @@ public class Board extends JPanel {
     }
 
     public void createBoard() {
-        for (int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
-                fields[i][j] = new JPanel();
-                fields[i][j].setLayout(new FlowLayout());
-                if ((i + j) % 2 == 0)
-                    fields[i][j].setBackground(Color.LIGHT_GRAY);
-                else
-                    fields[i][j].setBackground(Color.GRAY);
 
-                fields[i][j].revalidate();
-                fields[i][j].repaint();
-                add(fields[i][j]);
-            }
-        }
+        IntStream.range(0,8).forEach(y -> IntStream.range(0,8)
+                .forEach(x ->{fields[x][y]= new JPanel();
+                    fields[x][y].setLayout(new FlowLayout());
+                    if ((x + y) % 2 == 0)
+                        fields[x][y].setBackground(Color.LIGHT_GRAY);
+                    else
+                        fields[x][y].setBackground(Color.GRAY);
+
+                    fields[x][y].revalidate();
+                    fields[x][y].repaint();
+                    add(fields[x][y]);}
+                ));
     }
 
 
-    public void movePiece(Player player,Player opponent, int id, Coord coord) {    //Här har jag bara testat att flytta på en pjäs
+    public void movePiece(Player player,Player opponent, int id, Coord coord) {
 
         int x = player.getPieces().get(id).getPosition().x;
         int y = player.getPieces().get(id).getPosition().y;
@@ -64,29 +65,29 @@ public class Board extends JPanel {
 
 
     public void initPlayers(Map<Integer, Piece> p1Pieces, Map<Integer, Piece> p2Pieces) {
-        for (Piece p : p1Pieces.values()) {
-            fields[p.getPosition().x][p.getPosition().y].add(new JLabel(p.getImg()));
-            fields[p.getPosition().x][p.getPosition().y].revalidate();
-            fields[p.getPosition().x][p.getPosition().y].repaint();
-        }
-        for (Piece p : p2Pieces.values()) {
-            fields[p.getPosition().x][p.getPosition().y].add(new JLabel(p.getImg()));
-            fields[p.getPosition().x][p.getPosition().y].revalidate();
-            fields[p.getPosition().x][p.getPosition().y].repaint();
-        }
+
+        Stream<Piece> stream=Stream.concat(p1Pieces.values().stream(), p2Pieces.values().stream());
+
+        stream.forEach(p -> {fields[p.getPosition().x][p.getPosition().y].add(new JLabel(p.getImg()));
+                             fields[p.getPosition().x][p.getPosition().y].revalidate();
+                             fields[p.getPosition().x][p.getPosition().y].repaint();});
+
     }
 
     public Piece checkPosition(Coord coord, Player p1, Player p2) {
-            for (Piece piece:p1.getPieces().values()) {
-               if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
-                    return piece;
-            }
-            for (Piece piece:p2.getPieces().values()) {
-                if(piece.getPosition().x==coord.x && piece.getPosition().y==coord.y)
-                    return piece;
-            }
+        
+        Stream<Piece> stream=Stream.concat(p1.getPieces().values().stream(), p2.getPieces().values().stream());
+        Stream<Piece> stream1=Stream.concat(p1.getPieces().values().stream(), p2.getPieces().values().stream());
 
-            return null;
+        if(stream.filter(p -> p.getPosition().x==coord.x).anyMatch(p -> p.getPosition().y==coord.y)){
+
+            return stream1
+                    .filter(p -> p.getPosition().x==coord.x && p.getPosition().y==coord.y)
+                    .findFirst()
+                    .get();
+        }
+
+        return null;
     }
 }
 

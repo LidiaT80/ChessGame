@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Player {
     private String color;
@@ -70,12 +71,11 @@ public class Player {
     }
 
     public void removePiece(Coord coord){
-        Piece piece=null;
-        for (Piece p:pieces.values()) {
-            if(p.getPosition().x==coord.x && p.getPosition().y==coord.y)
-                piece=p;
-        }
-        pieces.remove(piece.getId(),piece);
+        Piece piece=pieces.values().stream()
+                .filter(p -> p.getPosition().x==coord.x && p.getPosition().y==coord.y)
+                .findFirst()
+                .get();
 
+        pieces.remove(piece.getId(),piece);
     }
 }
