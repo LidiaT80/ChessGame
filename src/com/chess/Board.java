@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 public class Board extends JPanel {
 
     JPanel[][] fields = new JPanel[8][8];
+    Logger logger= Logger.getInstance();
 
     public Board() {
         setLayout(new GridLayout(8, 8));
@@ -38,7 +39,8 @@ public class Board extends JPanel {
 
 
     public void movePiece(Player player,Player opponent, int id, Coord coord) {
-
+        
+        String move;
         int x = player.getPieces().get(id).getPosition().x;
         int y = player.getPieces().get(id).getPosition().y;
         int newx = coord.x;
@@ -61,6 +63,10 @@ public class Board extends JPanel {
         fields[newx][newy].repaint();
 
         player.getPieces().get(id).setPosition(newx, newy);
+
+        move=String.format("%c%c to %c%c", (char)(x+65),(char)(y+49),(char)(newx+65),(char)(newy+49));
+        logger.logMove(move);
+        logger.printMove(move);
     }
 
 
