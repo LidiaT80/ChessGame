@@ -59,13 +59,13 @@ public class Rook implements Piece {
         List<Coord> coord4 = new ArrayList<>();
 
         for (int i = 1; i <boardSize ; i++) {
-            if ((coord.y+i)<7)
+            if ((coord.y+i)<=7)
                 coord1.add(new Coord(coord.x,coord.y+i));
-            if ((coord.y-i)>0)
+            if ((coord.y-i)>=0)
                 coord2.add(new Coord(coord.x,coord.y-i));
-            if ((coord.x+i)<7)
+            if ((coord.x+i)<=7)
                 coord3.add(new Coord(coord.x+i,coord.y));
-            if ((coord.x-i)>0)
+            if ((coord.x-i)>=0)
                 coord4.add(new Coord(coord.x-i,coord.y));
         }
         coords.add(coord1);

@@ -154,7 +154,7 @@ class Game {
 
         if (check) {
             randomIDpick = kingId;
-            if(unRankedMovables.get(randomIDpick).size()!=0){
+            if(unRankedMovables.get(randomIDpick)!=null){
                 for (Coord c:unRankedMovables.get(randomIDpick)){
                     coordList.add(c);
                 }
@@ -249,7 +249,7 @@ class Game {
 
     public void checkKing(Player player, Player opponent) { //checks if the king is threatened
 
-        for (Piece p : player.getPieces().values()) {
+    /*    for (Piece p : player.getPieces().values()) {
             if (p instanceof Pawn) {
                 for (Coord c : ((Pawn) p).killMove()) {
                     checkForCheck(c, player, opponent);
@@ -263,7 +263,15 @@ class Game {
                     }
                 }
             }
-        }
+        }*/
+
+            for (List<Coord> list:filterRankedMap(canMove(player.getPieces())).values()) {
+                for (Coord c : list) {
+                    checkForCheck(c,player,opponent);
+                }
+            }
+
+
     }
 
     public void checkForCheck(Coord c, Player player, Player opponent) {
