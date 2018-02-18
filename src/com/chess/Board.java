@@ -39,7 +39,7 @@ public class Board extends JPanel {
 
 
     public void movePiece(Player player,Player opponent, int id, Coord coord) {
-        
+
         String move;
         int x = player.getPieces().get(id).getPosition().x;
         int y = player.getPieces().get(id).getPosition().y;

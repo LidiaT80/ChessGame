@@ -167,12 +167,14 @@ class Game {
             }*/
             if (coordList.size()!=0) {
                 coordList = checkKingMove(coordList, opponent);
-                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
+                if(coordList.size()!=0) {
+                    randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
 
-                move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
-                check = false;
-                checkKing( opponent, player);
-                return true;
+                    move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
+                    check = false;
+                    checkKing(opponent, player);
+                    return true;
+                }
             }
             if (coordList.size() == 0) {
                 opponentCoord = findOpponent(player, opponent);
@@ -205,12 +207,12 @@ class Game {
 
             do{
                 randomIDpick = choosePiece(highestRankMovables);
-                coordList = highestRankMovables.get(randomIDpick);
-                if (randomIDpick == kingId) {
+                if (randomIDpick == kingId)
                     coordList = checkKingMove(coordList, opponent);
-                }
-                randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
+                else
+                    coordList = highestRankMovables.get(randomIDpick);
             }while (!(coordList.size()>0));
+            randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
 
             move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
             checkKing(player, opponent);
