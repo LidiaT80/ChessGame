@@ -50,6 +50,10 @@ public class King implements Piece {
         List<Coord> coord2 = new ArrayList<>();
         List<Coord> coord3 = new ArrayList<>();
         List<Coord> coord4 = new ArrayList<>();
+        List<Coord> coord5 = new ArrayList<>();
+        List<Coord> coord6 = new ArrayList<>();
+        List<Coord> coord7 = new ArrayList<>();
+        List<Coord> coord8 = new ArrayList<>();
 
         if(coord.x<7)
             coord1.add(new Coord(coord.x+1,coord.y));
@@ -59,11 +63,24 @@ public class King implements Piece {
             coord3.add(new Coord(coord.x,coord.y+1));
         if(coord.y>0)
             coord4.add(new Coord(coord.x,coord.y-1));
+        if(coord.x<7 && coord.y<7)
+            coord5.add(new Coord(coord.x+1, coord.y+1));
+        if(coord.x<7 && coord.y>0)
+            coord6.add(new Coord(coord.x+1, coord.y-1));
+        if(coord.x>0 && coord.y<7)
+            coord7.add(new Coord(coord.x-1, coord.y+1));
+        if(coord.x>0 && coord.y>0)
+            coord8.add(new Coord(coord.x-1, coord.y-1));
+
 
         coords.add(coord1);
         coords.add( coord2);
         coords.add( coord3);
         coords.add( coord4);
+        coords.add(coord5);
+        coords.add( coord6);
+        coords.add( coord7);
+        coords.add( coord8);
 
         return coords;
     }
