@@ -208,7 +208,7 @@ class Game {
             do{
                 randomIDpick = choosePiece(highestRankMovables);
                 if (randomIDpick == kingId)
-                    coordList = checkKingMove(coordList, opponent);
+                    coordList = checkKingMove(unRankedMovables.get(randomIDpick), opponent);
                 else
                     coordList = highestRankMovables.get(randomIDpick);
             }while (!(coordList.size()>0));
