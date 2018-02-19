@@ -25,11 +25,11 @@ class Game {
         boolean game1 = true;
         boolean game2 = true;
         while (game1 && game2) {
-            Thread.sleep(100);
+            Thread.sleep(800);
             game1 = chooseMove(p1, p2);
             if (!game1)
                 break;
-            Thread.sleep(100);
+            Thread.sleep(800);
             game2 = chooseMove(p2, p1);
         }
 
@@ -142,41 +142,48 @@ class Game {
     }
 
     private boolean chooseMove(Player player, Player opponent) {
-        Map<Integer, Map<Integer, List<Coord>>> movables = new HashMap<>(canMove(player.getPieces()));
 
+        Map<Integer, Map<Integer, List<Coord>>> movables = new HashMap<>(canMove(player.getPieces()));
         Map<Integer, List<Coord>> highestRankMovables = new HashMap<>(filterRankedMap(movables));
         Map<Integer, List<Coord>> unRankedMovables = filterUnrankedMap(movables);
-        List<Coord> coordList=new ArrayList<>();
+        List<Coord> coordList;
+        Map<Integer,List<Coord>> safeCoords=new HashMap<>();
+        List<Integer> safeId=new ArrayList<>();
 
         int randomIDpick, randomCoordPick;
         Coord opponentCoord;
         boolean checkmate = false;
 
-        if (check) {
-            randomIDpick = kingId;
-            if(unRankedMovables.get(randomIDpick)!=null){
-                for (Coord c:unRankedMovables.get(randomIDpick)){
-                    coordList.add(c);
+        if(!check){
+            if (movables.size() == 0)
+                return false;
+
+            for (int id:highestRankMovables.keySet()){
+                safeCoords.put(id,checkForOpponent(highestRankMovables.get(id), opponent));
+                if(safeCoords.get(id).size()>0)
+                    safeId.add(id);
+            }
+            if(safeId.size()==0){
+                for (int id:highestRankMovables.keySet()){
+                    safeCoords.put(id,checkForOpponent(unRankedMovables.get(id), opponent));
+                    if(safeCoords.get(id).size()>0 && id!=kingId)
+                        safeId.add(id);
                 }
             }
-
-     /*       for (List<Coord> list:movables.get(randomIDpick).values()) {
-                for(Coord c:list){
-                    coordList.add(c);
-                }
-            }*/
-            if (coordList.size()!=0) {
-                coordList = checkKingMove(coordList, opponent);
-                if(coordList.size()!=0) {
-                    randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
-
-                    move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
-                    check = false;
-                    checkKing(opponent, player);
-                    return true;
+            if(safeId.size()==0){
+                for (int id:highestRankMovables.keySet()){
+                    safeCoords.put(id,highestRankMovables.get(id));
+                    if(safeCoords.get(id).size()>0 && id!=kingId)
+                        safeId.add(id);
                 }
             }
-            if (coordList.size() == 0) {
+            randomIDpick = choosePiece(safeId);
+            coordList=safeCoords.get(randomIDpick);
+        }else {
+            randomIDpick=kingId;
+            coordList=checkForOpponent(unRankedMovables.get(kingId), opponent);
+
+            if(coordList.size()==0){
                 opponentCoord = findOpponent(player, opponent);
 
                 for (int key : movables.keySet()) {
@@ -185,97 +192,95 @@ class Game {
                         for (Coord c:list) {
                             if (c.x == opponentCoord.x && c.y == opponentCoord.y) {
                                 checkmate = false;
-                                move(player, opponent, key, opponentCoord);
+                                randomIDpick=key;
+                                coordList.add(opponentCoord);
                                 break;
                             }
                         }
-
+                        if (!checkmate)
+                            break;
                     }
                     if (!checkmate)
                         break;
                 }
-                if (checkmate) {
+                if(checkmate){
                     System.out.println("Checkmate!!!");
                     return false;
                 }
             }
-            check = false;
-        } else {
-            if (movables.size() == 0)
-                return false;
-
-
-            do{
-                randomIDpick = choosePiece(highestRankMovables);
-                if (randomIDpick == kingId)
-                    coordList = checkKingMove(unRankedMovables.get(randomIDpick), opponent);
-                else
-                    coordList = highestRankMovables.get(randomIDpick);
-            }while (!(coordList.size()>0));
-            randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
-            if(opponent.getPieces().get(kingId).getPosition().x==coordList.get(randomCoordPick).x && opponent.getPieces().get(kingId).getPosition().y==coordList.get(randomCoordPick).y )
-                return false;
-            move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
-
-            checkKing(player, opponent);
+            check=false;
         }
+
+        randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
+        if(opponent.getPieces().get(kingId).getPosition().x==coordList.get(randomCoordPick).x && opponent.getPieces().get(kingId).getPosition().y==coordList.get(randomCoordPick).y )
+            return false;
+        move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
+
+        checkKing(player, opponent);
+
         return true;
     }
 
-    private List<Coord> checkKingMove(List<Coord> coordList, Player opponent) {
-        boolean movable;
+    private List<Coord> checkForOpponent(List<Coord> coordList, Player opponent) {
+        boolean safe;
 
-        List<Coord> kingCoords = new ArrayList<>();
+        List<Coord> safeCoords = new ArrayList<>();
         for (Coord coord : coordList) {
-            movable = true;
-            for (Map<Integer, List<Coord>> map : canMove(opponent.getPieces()).values()) {
-                for (List<Coord> list:map.values()) {
-                    for (Coord c : list) {
-                        if (c.x == coord.x && c.y == coord.y)
-                            movable = false;
+            safe = true;
+            for (int key:canMove(opponent.getPieces()).keySet()){
+                if(opponent.getPieces().get(key) instanceof Pawn){
+                    for (Coord c:((Pawn) opponent.getPieces().get(key)).killMove()){
+                        if (c.x == coord.x && c.y == coord.y) {
+                            safe = false;
+                            break;
+                        }
+                    }
+                }else {
+                    for (List<Coord> list:filterUnrankedMap(canMove(opponent.getPieces())).values()) {
+                        for (Coord c : list) {
+                            if (c.x == coord.x && c.y == coord.y) {
+                                safe = false;
+                                break;
+                            }
+                        }
+                        if ((!safe))
+                            break;
                     }
                 }
+                if ((!safe))
+                    break;
             }
-            if (movable)
-                kingCoords.add(coord);
+
+            if (safe)
+                safeCoords.add(coord);
         }
-        return kingCoords;
+        return safeCoords;
     }
 
 
-    public int choosePiece(Map<Integer, List<Coord>> movables) {  //chooses a random piece from list by Id
+    public int choosePiece(List<Integer> movables) {  //chooses a random piece from list by Id
         int randomIDpick;
         do {
             randomIDpick = ThreadLocalRandom.current().nextInt(0, 16);
-        } while (!(movables.containsKey(randomIDpick)));
+        } while (!(movables.contains(randomIDpick)));
         return randomIDpick;
     }
 
     public void checkKing(Player player, Player opponent) { //checks if the king is threatened
+        List<Coord> list;
 
-    /*    for (Piece p : player.getPieces().values()) {
-            if (p instanceof Pawn) {
-                for (Coord c : ((Pawn) p).killMove()) {
-                    checkForCheck(c, player, opponent);
-                }
-            }else {
-                for (Map<Integer, List<Coord>> map : canMove(player.getPieces()).values()) {
-                    for (List<Coord> list:map.values()) {
-                        for (Coord c : list) {
-                           checkForCheck(c,player,opponent);
-                        }
+        for (Piece p : player.getPieces().values()) {
+            if (p instanceof Pawn)
+                list=((Pawn) p).killMove();
+            else
+                list=filterUnrankedMap(canMove(player.getPieces())).get(p.getId());
+
+                if(list!=null)
+                    for (Coord c :list ) {
+                        checkForCheck(c, player, opponent);
                     }
-                }
-            }
-        }*/
 
-            for (List<Coord> list:filterRankedMap(canMove(player.getPieces())).values()) {
-                for (Coord c : list) {
-                    checkForCheck(c,player,opponent);
-                }
-            }
-
-
+        }
     }
 
     public void checkForCheck(Coord c, Player player, Player opponent) {
