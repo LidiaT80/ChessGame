@@ -25,11 +25,11 @@ class Game {
         boolean game1 = true;
         boolean game2 = true;
         while (game1 && game2) {
-            Thread.sleep(1000);
+            Thread.sleep(100);
             game1 = chooseMove(p1, p2);
             if (!game1)
                 break;
-            Thread.sleep(1000);
+            Thread.sleep(100);
             game2 = chooseMove(p2, p1);
         }
 
@@ -213,8 +213,10 @@ class Game {
                     coordList = highestRankMovables.get(randomIDpick);
             }while (!(coordList.size()>0));
             randomCoordPick = ThreadLocalRandom.current().nextInt(0, coordList.size());
-
+            if(opponent.getPieces().get(kingId).getPosition().x==coordList.get(randomCoordPick).x && opponent.getPieces().get(kingId).getPosition().y==coordList.get(randomCoordPick).y )
+                return false;
             move(player, opponent, randomIDpick, coordList.get(randomCoordPick));
+
             checkKing(player, opponent);
         }
         return true;
