@@ -158,24 +158,26 @@ class Game {
             if (movables.size() == 0)
                 return false;
 
-            for (int id:highestRankMovables.keySet()){
-                safeCoords.put(id,checkForOpponent(highestRankMovables.get(id), opponent));
-                if(safeCoords.get(id).size()>0)
-                    safeId.add(id);
+            highestRankMovables.keySet().stream()
+                    .filter(key -> checkForOpponent(highestRankMovables.get(key), opponent).size()>0)
+                    .forEach(i ->{safeCoords.put(i, checkForOpponent(highestRankMovables.get(i), opponent));
+                                  safeId.add(i);});
+
+            if(safeId.size()==0){
+                unRankedMovables.keySet().stream()
+                        .filter(key -> (key!=kingId && checkForOpponent(unRankedMovables.get(key), opponent).size()>0))
+                        .forEach(i -> {
+                            safeCoords.put(i,checkForOpponent(unRankedMovables.get(i), opponent));
+                            safeId.add(i);
+                        });
             }
             if(safeId.size()==0){
-                for (int id:highestRankMovables.keySet()){
-                    safeCoords.put(id,checkForOpponent(unRankedMovables.get(id), opponent));
-                    if(safeCoords.get(id).size()>0 && id!=kingId)
-                        safeId.add(id);
-                }
-            }
-            if(safeId.size()==0){
-                for (int id:highestRankMovables.keySet()){
-                    safeCoords.put(id,highestRankMovables.get(id));
-                    if(safeCoords.get(id).size()>0 && id!=kingId)
-                        safeId.add(id);
-                }
+                highestRankMovables.keySet().stream()
+                        .filter(key -> (key!=kingId && highestRankMovables.get(key).size()>0))
+                        .forEach(i -> {
+                            safeCoords.put(i,highestRankMovables.get(i));
+                            safeId.add(i);
+                        });
             }
             randomIDpick = choosePiece(safeId);
             coordList=safeCoords.get(randomIDpick);
@@ -186,10 +188,9 @@ class Game {
             if(coordList.size()==0){
                 opponentCoord = findOpponent(player, opponent);
 
-                for (int key : movables.keySet()) {
+                for (int key : unRankedMovables.keySet()) {
                     checkmate = true;
-                    for (List<Coord> list: movables.get(key).values()) {
-                        for (Coord c:list) {
+                        for (Coord c:unRankedMovables.get(key)) {
                             if (c.x == opponentCoord.x && c.y == opponentCoord.y) {
                                 checkmate = false;
                                 randomIDpick=key;
@@ -199,9 +200,6 @@ class Game {
                         }
                         if (!checkmate)
                             break;
-                    }
-                    if (!checkmate)
-                        break;
                 }
                 if(checkmate){
                    pathList=findPath(opponentCoord, player);
@@ -298,7 +296,7 @@ class Game {
                 list=((Pawn) p).killMove();
             else
                 list=filterUnrankedMap(canMove(player.getPieces())).get(p.getId());
-
+                
                 if(list!=null)
                     for (Coord c :list ) {
                         checkForCheck(c, player, opponent);
