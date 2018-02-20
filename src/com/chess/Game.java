@@ -25,11 +25,11 @@ class Game {
         boolean game1 = true;
         boolean game2 = true;
         while (game1 && game2) {
-            Thread.sleep(800);
+            Thread.sleep(200);
             game1 = chooseMove(p1, p2);
             if (!game1)
                 break;
-            Thread.sleep(800);
+            Thread.sleep(200);
             game2 = chooseMove(p2, p1);
         }
 
@@ -146,7 +146,7 @@ class Game {
         Map<Integer, Map<Integer, List<Coord>>> movables = new HashMap<>(canMove(player.getPieces()));
         Map<Integer, List<Coord>> highestRankMovables = new HashMap<>(filterRankedMap(movables));
         Map<Integer, List<Coord>> unRankedMovables = filterUnrankedMap(movables);
-        List<Coord> coordList;
+        List<Coord> coordList, pathList;
         Map<Integer,List<Coord>> safeCoords=new HashMap<>();
         List<Integer> safeId=new ArrayList<>();
 
@@ -204,6 +204,27 @@ class Game {
                         break;
                 }
                 if(checkmate){
+                   pathList=findPath(opponentCoord, player);
+                    for (Coord c:pathList) {
+                        for (int key:unRankedMovables.keySet()) {
+                            if(key!=kingId){
+                                for (Coord coord:unRankedMovables.get(key)) {
+                                    if(c.x==coord.x && c.y==coord.y){
+                                        checkmate=false;
+                                        randomIDpick=key;
+                                        coordList.add(coord);
+                                        break;
+                                    }
+                                }
+                                if(!checkmate)
+                                    break;
+                            }
+                        }
+                        if(!checkmate)
+                            break;
+                    }
+                }
+                if(checkmate){
                     System.out.println("Checkmate!!!");
                     return false;
                 }
@@ -236,15 +257,18 @@ class Game {
                         }
                     }
                 }else {
-                    for (List<Coord> list:filterUnrankedMap(canMove(opponent.getPieces())).values()) {
-                        for (Coord c : list) {
-                            if (c.x == coord.x && c.y == coord.y) {
-                                safe = false;
-                                break;
+                    for(int id:filterUnrankedMap(canMove(opponent.getPieces())).keySet()){
+                        if(!(opponent.getPieces().get(key) instanceof Pawn)){
+                            for (Coord c : filterUnrankedMap(canMove(opponent.getPieces())).get(id)) {
+                                if (c.x == coord.x && c.y == coord.y) {
+                                    safe = false;
+                                    break;
+                                }
                             }
+                            if ((!safe))
+                                break;
                         }
-                        if ((!safe))
-                            break;
+
                     }
                 }
                 if ((!safe))
@@ -307,5 +331,40 @@ class Game {
         }
         return opponent.getPieces().get(opponentId).getPosition();
 
+    }
+
+    public List<Coord> findPath(Coord opponentCoord, Player player){
+        Coord kingCoord=player.getPieces().get(kingId).getPosition();
+        List<Coord> pathCoords=new ArrayList<>();
+        int range;
+
+        if(opponentCoord.x==kingCoord.x){
+            range=opponentCoord.y-kingCoord.y;
+            for (int i = 1; i <Math.abs(range) ; i++) {
+                if(range<0)
+                    pathCoords.add(new Coord(kingCoord.x, kingCoord.y-i));
+                else
+                    pathCoords.add(new Coord(kingCoord.x, kingCoord.y+i));
+            }
+        }
+        else if(opponentCoord.y==kingCoord.y){
+            range=opponentCoord.x-kingCoord.x;
+            for (int i = 1; i <Math.abs(range) ; i++) {
+                if(range<0)
+                    pathCoords.add(new Coord(kingCoord.x-i, kingCoord.y));
+                else
+                    pathCoords.add(new Coord(kingCoord.x+i, kingCoord.y));
+            }
+        }
+        else if (Math.abs(opponentCoord.x-kingCoord.x)==Math.abs(opponentCoord.y-kingCoord.y)){
+            range=opponentCoord.x-kingCoord.x;
+            for (int i = 1; i <Math.abs(range) ; i++) {
+                if(range<0)
+                    pathCoords.add(new Coord(kingCoord.x-i, kingCoord.y-i));
+                else
+                    pathCoords.add(new Coord(kingCoord.x+i, kingCoord.y+i));
+            }
+        }
+        return pathCoords;
     }
 }
